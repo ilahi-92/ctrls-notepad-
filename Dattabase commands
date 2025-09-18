@@ -506,3 +506,45 @@ AND TABLE_SCHEMA = 'zabbix'
 ORDER BY PARTITION_DESCRIPTION;
 
 ===========================================================
+
+
+Average HOST level agent triggers :
+
+-- 1. Complete list of all hosts with Average severity agent unreachable triggers
+SELECT 
+    h.name as host_name,
+    t.triggerid,
+    t.description as trigger_name,
+    CASE t.status 
+        WHEN 0 THEN 'Enabled'
+        WHEN 1 THEN 'Disabled'
+    END as status_name,
+    t.status
+FROM triggers t
+JOIN functions f ON t.triggerid = f.triggerid
+JOIN items i ON f.itemid = i.itemid
+JOIN hosts h ON i.hostid = h.hostid
+WHERE t.description LIKE '%agent%unreachable%'
+    AND t.priority = 3      -- Average severity
+    AND t.flags = 0         -- Host-level triggers only
+ORDER BY h.name;
+
+
+output : 
+
+| Virtuoso_HBSS DB-Win-192.168.219.22                                           |   2542712 | {HOST.NAME} - Average - Zabbix agent unreachable                            | Enabled     |      0 |
+| Virtuoso_PIMAPP-Win-192.168.219.25                                            |   2542770 | {HOST.NAME} - Average - Zabbix agent unreachable                            | Enabled     |      0 |
+| Virtuoso_PIMDB01-Win-192.168.219.24                                           |   2542741 | {HOST.NAME} - Average - Zabbix agent unreachable                            | Enabled     |      0 |
+| Wizertech_fils4ap1_Linux_Cluster_VIP_10.10.93.25_Of_10.10.93.18_93.17         |   2522998 | {HOST.NAME} - Average - Zabbix agent unreachable                            | Enabled     |      0 |
+| jamboree_centos_Linux_182.18.130.194_192.168.170.4                            |   1398623 | {HOST.NAME} - Average - Zabbix agent unreachable                            | Enabled     |      0 |
+| peocit44cld_win_45.249.110.166_10.143.143.136                                 |   2719215 | {HOST.NAME} - Zabbix agent unreachable (for {$AGENT.TIMEOUT})               | Enabled     |      0 |
+| peocit46cld_Win_10.143.143.141                                                |   2719370 | {HOST.NAME} - Zabbix agent unreachable (for {$AGENT.TIMEOUT})               | Enabled     |      0 |
+| peocit48cld_Win_103.26.98.251_10.143.143.145                                  |   2719401 | {HOST.NAME} - Zabbix agent unreachable (for {$AGENT.TIMEOUT})               | Enabled     |      0 |
+| testserver-TMFL-DC-R3PTMFAD-AIX-172.26.104.32                                 |   1659765 | Template App Zabbix Agent: {HOST.NAME} - Average - Zabbix agent unreachable | Disabled    |      1 |
+| tmfl-dc-proxy.ctrls.in-192.168.105.11                                         |   1224402 | {HOST.NAME} - Average - Zabbix agent unreachable                            | Enabled     |      0 |
++-------------------------------------------------------------------------------+-----------+-----------------------------------------------------------------------------+-------------+--------+
+915 rows in set (1.37 sec)
+
+mysql>
+
+
