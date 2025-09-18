@@ -1,0 +1,493 @@
+Database commands.
+
+[root@MUMAUTPLBIDB1 bi_zabbix]# df -hT
+Filesystem                       Type      Size  Used Avail Use% Mounted on
+devtmpfs                         devtmpfs   94G     0   94G   0% /dev
+tmpfs                            tmpfs      94G     0   94G   0% /dev/shm
+tmpfs                            tmpfs      94G  1.1M   94G   1% /run
+tmpfs                            tmpfs      94G     0   94G   0% /sys/fs/cgroup
+/dev/mapper/OS--VG-root          xfs        30G  5.9G   24G  20% /
+/dev/mapper/OS--VG-home          xfs       4.9G   33M  4.9G   1% /home
+/dev/sda1                        xfs       2.0G  205M  1.8G  11% /boot
+/dev/mapper/OS--VG-var           xfs       2.9T  2.8T   98G  97% /var
+/dev/mapper/OS--VG-var_log       xfs       5.9G  795M  5.1G  14% /var/log
+/dev/mapper/OS--VG-tmp           xfs       4.9G   33M  4.9G   1% /tmp
+/dev/mapper/OS--VG-var_log_audit xfs       2.0G  504M  1.5G  26% /var/log/audit
+tmpfs                            tmpfs      19G     0   19G   0% /run/user/1278803524
+
+
+/var is 97% full
+
+[root@MUMAUTPLBIDB1 ~]# cd /var/lib/mysql
+[root@MUMAUTPLBIDB1 mysql]# du -sch *
+
+
+2.7T    bi_zabbix
+
+cd bi_zabbix
+
+
+du -sch *
+
+
+
+history_log
+history
+history_text
+history_str
+history_unit
+trends
+trends_unit
+=======================================
+
+mysql -u root -p -A
+
+show databases;
+
+use bi_zabbix
+
+(drop tables)  
+
+history_log
+history
+history_text
+history_str
+history_uint
+trends
+trends_uint
+
+drop 3 months table
+
+
+ALTER TABLE history_str DROP PARTITION p2024_09_17, p2024_09_18, p2024_09_19, p2024_09_20, p2024_09_21;
+
+ALTER TABLE history_str DROP PARTITION p2024_09_22, p2024_09_23, p2024_09_24, p2024_09_25, p2024_09_26;
+
+ALTER TABLE history_str DROP PARTITION p2024_09_27, p2024_09_28, p2024_09_29, p2024_09_30, p2024_09_31;
+
+====================================
+
+
+SELECT table_name "table size",
+        ROUND(SUM(data_length + index_length) / 1024 / 1024/1024, 3) "DB Size in GB" 
+FROM information_schema.tables 
+WHERE table_schema in ('zabbix')
+GROUP BY table_name
+ORDER BY 2 DESC LIMIT 10;
+
+=========================================================
+
+mysql> SHOW SLAVE STATUS\G
+Empty set, 1 warning (0.00 sec)
+
+mysql> SHOW MASTER STATUS\G
+*************************** 1. row ***************************
+             File: mysql-bin.013822
+         Position: 697274069
+     Binlog_Do_DB:
+ Binlog_Ignore_DB:
+Executed_Gtid_Set: 22c418a6-23a0-11ed-a93a-005056b8df55:1-8
+1 row in set (0.00 sec)
+
+
+============================================================
+
+
+
+SELECT table_name "table size",
+        ROUND(SUM(data_length + index_length) / 1024 / 1024/1024, 3) "DB Size in GB" 
+FROM information_schema.tables 
+WHERE table_schema in ('clr_zabbix')
+GROUP BY table_name
+ORDER BY 2 DESC LIMIT 10;
+
+
+=============================================================
+
+
+  816  06/02/25 18:21:12 top -o %MEM
+  817  06/02/25 18:21:22 ps aux --sort=-%mem | head -n 10
+  818  06/02/25 18:21:37 ps aux | grep AUTXENMONPROXY6
+  819  06/02/25 18:22:50 mysqladmin extended-status | grep -i mem
+  820  06/02/25 18:23:04 mysql -u root -P
+  821  06/02/25 18:23:07 mysql -u root -p
+  822  06/02/25 18:23:29 mysqladmin processlist
+  
+  =================================================
+  
+  
+ mysql> create database zabbix_proxy character set utf8mb4 collate utf8mb4_bin;
+mysql> create user zabbix@localhost identified by 'Xen@123456789';
+mysql> grant all privileges on zabbix_proxy.* to zabbix@localhost;
+mysql> set global log_bin_trust_function_creators = 1;
+mysql> quit;
+
+Ctrls@123
+
+==================
+
+how to check partitionaoing in mysql.
+
+-- Check if partitioning is enabled and what tables are partitioned
+SELECT 
+    TABLE_SCHEMA, 
+    TABLE_NAME, 
+    PARTITION_NAME, 
+    PARTITION_ORDINAL_POSITION, 
+    PARTITION_METHOD, 
+    PARTITION_EXPRESSION,
+    TABLE_ROWS
+FROM information_schema.PARTITIONS 
+WHERE TABLE_SCHEMA = 'clr_zabbix'  -- your database name
+AND PARTITION_NAME IS NOT NULL
+ORDER BY TABLE_NAME, PARTITION_ORDINAL_POSITION;
+
+
+----
+
+SHOW TABLE STATUS LIKE 'proxy_history';
+
+
+---
+
+mysql> SHOW TABLE STATUS LIKE 'proxy_history';
++---------------+--------+---------+------------+----------+----------------+-------------+-----------------+--------------+-----------+----------------+---------------------+---------------------+------------+-------------+----------+----------------+---------+
+| Name          | Engine | Version | Row_format | Rows     | Avg_row_length | Data_length | Max_data_length | Index_length | Data_free | Auto_increment | Create_time         | Update_time         | Check_time | Collation   | Checksum | Create_options | Comment |
++---------------+--------+---------+------------+----------+----------------+-------------+-----------------+--------------+-----------+----------------+---------------------+---------------------+------------+-------------+----------+----------------+---------+
+| proxy_history | InnoDB |      10 | Dynamic    | 15107590 |            121 |  1835024384 |               0 |    472924160 |   4194304 |     1211378386 | 2024-10-21 13:17:51 | 2025-02-27 16:47:11 | NULL       | utf8mb4_bin |     NULL |                |         |
++---------------+--------+---------+------------+----------+----------------+-------------+-----------------+--------------+-----------+----------------+---------------------+---------------------+------------+-------------+----------+----------------+---------+
+1 row in set (0.05 sec)
+
+mysql> TRUNCATE TABLE proxy_history;
+Query OK, 0 rows affected (0.45 sec)
+
+
+
+
+zabbix_get -s 103.8.126.135 -k windowsdiskinfo[C:]
+
+
+
+------
+
+old :
+
+PURGE binary logs to 'mysql-bin.011340';
+
+
+
+
+=====
+
+zabbix patching :
+
+web-server  - systemctl stop php-fpm httpd
+ 
+Application server - pidof zabbix_server
+ 
+kill -9 <child ids>
+ 
+systemctl stop zabbix-server
+ 
+systemctl stop mysqld
+ 
+ 
+ mysql -ukfinuser -p'Za331x.1357' kfinzabbix -e 'SELECT i.ip,i.port,i.errors_from FROM interface i where i.errors_from!=0;'
+ 
+ Invoke-Sqlcmd -ServerInstance "localhost" -Database "msdb" -username "LogshippingMonitor" -password "ctrls.1234$#$" -Query "exec master.dbo.sp_help_log_shipping_monitor" | Format-Table
+ 
+ 
+ 
+ /etc/zabbix/web/zabbix.conf.php
+
+
+
+
+
+rpm -qa | grep -i zabbix
+
+rpm -ivh zabbix-agent-5.0.10-1.el8.x86_64.rpm
+
+
+28-05-2025
+
+Kfin database
+
+command to check since when the data is available
+
+mysql> use kfinzabbix;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> SELECT
+    ->     TABLE_NAME,
+    ) as LATEST_DATE,
+    ->     COUNT(*) as PARTITION_COUNT,
+    ->     CONCAT(
+    ->         SUBSTRING(MIN(PARTITION_NAME), 2, 4), '-',
+    ->         SUBSTRING(MIN(PARTITION_NAME), 6, 2), '-',
+    ->         SUBSTRING(MIN(PARTITION_NAME), 8, 2)
+    ->     ) as EARLIEST_DATE,
+    ->     CONCAT(
+    ->         SUBSTRING(MAX(PARTITION_NAME), 2, 4), '-',
+    ->         SUBSTRING(MAX(PARTITION_NAME), 6, 2), '-',
+    ->         SUBSTRING(MAX(PARTITION_NAME), 8, 2)
+    ->     ) as LATEST_DATE,
+    ->     ROUND(SUM(DATA_LENGTH)/1024/1024/1024, 2) as 'SIZE_GB'
+    -> FROM
+    ->     information_schema.PARTITIONS
+    -> WHERE
+    ->     TABLE_SCHEMA = 'kfinzabbix'
+    ->     AND TABLE_NAME IN ('history', 'history_uint', 'history_str', 'history_text', 'history_log', 'trends', 'trends_uint')
+    ->     AND PARTITION_NAME IS NOT NULL
+    -> GROUP BY
+    ->     TABLE_NAME
+    -> ORDER BY
+    ->     SIZE_GB DESC;
++--------------+-----------------+---------------+-------------+---------+
+| TABLE_NAME   | PARTITION_COUNT | EARLIEST_DATE | LATEST_DATE | SIZE_GB |
++--------------+-----------------+---------------+-------------+---------+
+| history_uint |             829 | 2024-10-28    | 2027-02-04  |  941.47 |
+| history      |             829 | 2024-10-28    | 2027-02-04  |  280.80 |
+| trends_uint  |            1009 | 2024-04-26    | 2027-02-04  |  109.01 |
+| trends       |            1009 | 2024-04-26    | 2027-02-04  |   22.77 |
+| history_str  |             829 | 2024-10-28    | 2027-02-04  |    2.67 |
+| history_text |             829 | 2024-10-28    | 2027-02-04  |    2.05 |
+| history_log  |             708 | 2025-02-27    | 2027-02-04  |    0.01 |
++--------------+-----------------+---------------+-------------+---------+
+7 rows in set (0.12 sec)
+
+mysql>
+
+
+the data is available from OCT -- 
+
+but we need data only from Dec - May
+
+lets see how much data is there before dec - 
+
+mysql> SELECT
+    AND TABLE_NAME IN ('history', 'history_uint', 'history_str', 'history_text', 'history_log', 'trends', 'trends_uint')
+    AND PARTITION_NAME IS NOT NULL
+    AND PARTITION_NAME < 'p202412010000'  -- Before December 1, 2024
+    ->     TABLE_NAME,
+    ->     COUNT(*) as PARTITIONS_TO_DROP,
+    ->     ROUND(SUM(DATA_LENGTH)/1024/1024/1024, 2) as 'SIZE_TO_FREE_GB'
+    -> FROM
+    ->     information_schema.PARTITIONS
+    -> WHERE
+    ->     TABLE_SCHEMA = 'kfinzabbix'
+    ->     AND TABLE_NAME IN ('history', 'history_uint', 'history_str', 'history_text', 'history_log', 'trends', 'trends_uint')
+    ->     AND PARTITION_NAME IS NOT NULL
+    ->     AND PARTITION_NAME < 'p202412010000'  -- Before December 1, 2024
+    -> GROUP BY
+    ->     TABLE_NAME
+    -> ORDER BY
+    ->     SIZE_TO_FREE_GB DESC;
++--------------+--------------------+-----------------+
+| TABLE_NAME   | PARTITIONS_TO_DROP | SIZE_TO_FREE_GB |
++--------------+--------------------+-----------------+
+| history_uint |                 34 |           76.12 |
+| trends_uint  |                214 |           43.22 |
+| history      |                 34 |           35.68 |
+| trends       |                214 |           11.85 |
+| history_str  |                 34 |            0.27 |
+| history_text |                 34 |            0.27 |
++--------------+--------------------+-----------------+
+6 rows in set (0.01 sec)
+
+mysql>
+
+
+Command that will give you whicch command to run
+
+
+mysql> use kfinzabbix;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> SELECT CONCAT('ALTER TABLE history_uint DROP PARTITION ',
+    ->     GROUP_CONCAT(PARTITION_NAME ORDER BY PARTITION_NAME SEPARATOR ', '),
+    ->     ';') as DROP_COMMAND
+    -> FROM information_schema.PARTITIONS
+    -> WHERE TABLE_SCHEMA = 'kfinzabbix'
+    ->     AND TABLE_NAME = 'history_uint'
+    ->     AND PARTITION_NAME IS NOT NULL
+    ->     AND PARTITION_NAME < 'p202412010000';
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| DROP_COMMAND                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ALTER TABLE history_uint DROP PARTITION p202410280000, p202410290000, p202410300000, p202410310000, p202411010000, p202411020000, p202411030000, p202411040000, p202411050000, p202411060000, p202411070000, p202411080000, p202411090000, p202411100000, p202411110000, p202411120000, p202411130000, p202411140000, p202411150000, p202411160000, p202411170000, p202411180000, p202411190000, p202411200000, p202411210000, p202411220000, p202411230000, p202411240000, p202411250000, p202411260000, p202411270000, p202411280000, p202411290000, p202411300000; |
++-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------l8ii----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.01 sec)
+
+mysql>
+
+ALTER TABLE history_uint DROP PARTITION p202410280000, p202410290000, p202410300000, p202410310000, p202411010000, p202411020000, p202411030000, p202411040000, p202411050000, p202411060000, p202411070000, p202411080000, p202411090000, p202411100000, p202411110000, p202411120000, p202411130000, p202411140000, p202411150000, p202411160000, p202411170000, p202411180000, p202411190000, p202411200000, p202411210000, p202411220000, p202411230000, p202411240000, p202411250000, p202411260000, p202411270000, p202411280000, p202411290000, p202411300000; 
+
+
+History table partition :
+
+-- Check if history_uint (the 5.8TB monster) is partitioned
+SELECT 
+    TABLE_NAME, 
+    PARTITION_NAME, 
+    TABLE_ROWS
+FROM information_schema.PARTITIONS 
+WHERE TABLE_SCHEMA = 'zabbix' 
+    AND TABLE_NAME = 'history_uint'
+    AND PARTITION_NAME IS NOT NULL
+ORDER BY PARTITION_ORDINAL_POSITION;
+
+=====================================================
+
+
+Partion ranges;
+
+-- See the partition boundaries for recent partitions
+SELECT 
+    PARTITION_NAME,
+    PARTITION_DESCRIPTION,
+    TABLE_ROWS
+FROM information_schema.PARTITIONS 
+WHERE TABLE_SCHEMA = 'zabbix' 
+    AND TABLE_NAME = 'history_uint'
+    AND PARTITION_NAME LIKE 'p2025%'
+ORDER BY PARTITION_NAME DESC
+LIMIT 10;
+
+======================
+
+Step 2: Check Current Date vs Partition Logic
+
+
+-- What's the current timestamp
+SELECT 
+    UNIX_TIMESTAMP(NOW()) as current_timestamp,
+    FROM_UNIXTIME(UNIX_TIMESTAMP(NOW())) as current_datetime;
+
+-- Check what the most recent partition should handle
+SELECT 
+    PARTITION_NAME,
+    PARTITION_DESCRIPTION
+FROM information_schema.PARTITIONS 
+WHERE TABLE_SCHEMA = 'zabbix' 
+    AND TABLE_NAME = 'history_uint'
+    AND PARTITION_NAME LIKE 'p2025_07%'
+ORDER BY PARTITION_NAME DESC;
+
+
+==================================================
+
+
+misssing partitions;
+
+-- Check if partition exists for today's date
+SELECT COUNT(*) as partition_exists
+FROM information_schema.PARTITIONS 
+WHERE TABLE_SCHEMA = 'zabbix' 
+    AND TABLE_NAME = 'history_uint'
+    AND PARTITION_NAME = 'p2025_07_01';  -- Adjust for current date
+	
+	==============================
+	
+	
+	
+	
+	
+	
+	DB structure backup
+	
+
+mysql> SHOW CREATE TABLE history_uint\G > partition_structure_backup.sql
+*************************** 1. row ***************************
+       Table: history_uint
+Create Table: CREATE TABLE `history_uint` (
+  `itemid` bigint unsigned NOT NULL,
+  `clock` int NOT NULL DEFAULT '0',
+  `value` bigint unsigned NOT NULL DEFAULT '0',
+  `ns` int NOT NULL DEFAULT '0',
+  KEY `history_uint_1` (`itemid`,`clock`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3
+/*!50100 PARTITION BY RANGE (`clock`)
+(PARTITION p2023_04_00 VALUES LESS THAN (1680287400) ENGINE = InnoDB,
+ PARTITION p2023_04_01 VALUES LESS THAN (1680373800) ENGINE = InnoDB,
+ PARTITION p2023_04_02 VALUES LESS THAN (1680460200) ENGINE = InnoDB,
+ PARTITION p2023_04_03 VALUES LESS THAN (1680546600) ENGINE = InnoDB,
+ PARTITION p2023_04_04 VALUES LESS THAN (1680633000) ENGINE = InnoDB,
+ PARTITION p2023_04_05 VALUES LESS THAN (1680719400) ENGINE = InnoDB,
+ PARTITION p2023_04_06 VALUES LESS THAN (1680805800) ENGINE = InnoDB,
+ PARTITION p2023_04_07 VALUES LESS THAN (1680892200) ENGINE = InnoDB,
+ PARTITION p2023_04_08 VALUES LESS THAN (1680978600) ENGINE = InnoDB,
+ PARTITION p2023_04_09 VALUES LESS THAN (1681065000) ENGINE = InnoDB,
+ PARTITION p2023_04_10 VALUES LESS THAN (1681151400) ENGINE = InnoDB,
+ PARTITION p2023_04_11 VALUES LESS THAN (1681237800) ENGINE = InnoDB,
+ PARTITION p2023_04_12 VALUES LESS THAN (1681324200) ENGINE = InnoDB,
+ PARTITION p2023_04_13 VALUES LESS THAN (1681410600) ENGINE = InnoDB,
+ PARTITION p2023_04_14 VALUES LESS THAN (1681497000) ENGINE = InnoDB,
+ PARTITION p2023_04_15 VALUES LESS THAN (1681583400) ENGINE = InnoDB,
+ PARTITION p2023_04_16 VALUES LESS THAN (1681669800) ENGINE = InnoDB,
+ PARTITION p2023_04_17 VALUES LESS THAN (1681756200) ENGINE = InnoDB,
+ PARTITION p2023_04_18 VALUES LESS THAN (1681842600) ENGINE = InnoDB,
+ PARTITION p2023_04_19 VALUES LESS THAN (1681929000) ENGINE = InnoDB,
+ PARTITION p2023_04_20 VALUES LESS THAN (1682015400) ENGINE = InnoDB,
+ PARTITION p2023_04_21 VALUES LESS THAN (1682101800) ENGINE = InnoDB,
+ PARTITION p2023_04_22 VALUES LESS THAN (1682188200) ENGINE = InnoDB,
+ PARTITION p2023_04_23 VALUES LESS THAN (1682274600) ENGINE = InnoDB,
+ PARTITION p2023_04_24 VALUES LESS THAN (1682361000) ENGINE = InnoDB,
+ PARTITION p2023_04_25 VALUES LESS THAN (1682447400) ENGINE = InnoDB,
+ PARTITION p2023_04_26 VALUES LESS THAN (1682533800) ENGINE = InnoDB,
+
+
+
+
+=======
+
+
+-- Check if history_uint (the 5.8TB monster) is partitioned
+SELECT 
+    TABLE_NAME, 
+    PARTITION_NAME, 
+    TABLE_ROWS
+FROM information_schema.PARTITIONS 
+WHERE TABLE_SCHEMA = 'zabbix' 
+    AND TABLE_NAME = 'history_uint'
+    AND PARTITION_NAME IS NOT NULL
+ORDER BY PARTITION_ORDINAL_POSITION;
+
+=========================================
+
+
+validation :
+
+-- Check if new partitions exist
+SELECT 
+    PARTITION_NAME,
+    TABLE_ROWS,
+    ROUND(((DATA_LENGTH + INDEX_LENGTH) / 1024 / 1024 / 1024), 2) AS 'Size_GB'
+FROM information_schema.PARTITIONS 
+WHERE TABLE_SCHEMA = 'zabbix' 
+    AND TABLE_NAME = 'history_uint'
+    AND PARTITION_NAME IN ('p2025_04_00', 'p2025_05_00', 'p2025_06_00', 'p2025_07_00', 'last_part')
+ORDER BY PARTITION_NAME;
+
+==================================
+
+
+
+
+
+
+
+
+ALTER TABLE history_uint REORGANIZE PARTITION last_part INTO (
+    PARTITION p2025_04_00 VALUES LESS THAN (1746037800),
+    PARTITION p2025_05_00 VALUES LESS THAN (1748716200),
+    PARTITION p2025_06_00 VALUES LESS THAN (1751308200),
+    PARTITION p2025_07_00 VALUES LESS THAN (1753986600),
+    PARTITION last_part VALUES LESS THAN MAXVALUE
+);
+
+
