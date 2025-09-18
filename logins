@@ -1,0 +1,502 @@
+
+wifi pw.
+
+!lLum1n@t0R@81
+
+================================================
+
+
+
+
+CLR and BI
+
+ilahi.15260 -- user
+ilahi@15260 --  pass
+ 
+https://198.19.24.22/zabbix
+https://198.19.24.38/zabbix
+
+
+
+emonitorh: 
+
+https://emonitorh.ctrls.in/zabbix6
+
+U: Shaik.ilahi
+P: ilahi.Shaik
+
+
+https://kfinmonitor.kfintech.com/zabbix
+
+
+U: Shaik.Ilahi
+P : Shaik@12345
+
+
+=================================================
+
+VMname:ZabbixTest_VM1
+IP:202.143.97.184
+
+SSH:2232
+
+user:root
+ 
+Ctrls@1234
+
+dashboard : ilahi, SM1!
+
+
+
+ 
+
+
+=================================================
+ 
+MUM automation POD is manged by BIB linux
+MUM automation POD login. - 3rd Feb
+
+15260-ShaikM
+
+BaD93ZdthLTJRBIoRpFW
+
+new : 
+
+LDNx0luuYQBmoQw
+ 
+===================================================
+
+Xen Servers Dedicated Proxy
+
+198.19.24.122
+
+CaF4gmw8QxP4C$
+
+====================================================
+
+CLR root DB Password
+
+Ctrls.123
+
+321gue$$!T
+
+======================================================
+
+Ctrls.
+
+SECURE-METERS-PROXY.CTRLS.IN-192.168.180.44	192.168.180.44	 	206.1.15.112:5445	2232	root	R@ut.p123
+
+
+
+13206
+Inf0rmati0n@1807..!!
+ 
+ctrls-mgr
+YompA;(Qg3I?kSaG
+ 
+ snmpwalk -v 3 -l authPriv -u red-Indian -a sha256 -A Redindian12} -x aes128 -X Redindian12}
+ 
+ 
+ ===============================================================
+ 
+ VPN secure meters DR
+ 
+ 13560
+MumbaiIndians@45
+ 
+ 
+ Secure Meters DR	192.168.184.120		202.65.135.66:5445	22	root	ctrls.123
+
+connect to .120
+
+172.19.7.78
+
+HOST-RESOURCES-MIB::hrProcessorLoad.3 = INTEGER: 1
+HOST-RESOURCES-MIB::hrProcessorLoad.4 = INTEGER: 1
+HOST-RESOURCES-MIB::hrProcessorLoad.5 = INTEGER: 1
+HOST-RESOURCES-MIB::hrProcessorLoad.6 = INTEGER: 1
+[root@securemeters-DR-monitoring ~]# snmpwalk -v 2c -c SECURE-HYD 172.19.7.54 .1.3.6.1.2.1.25.3.3.1.2
+HOST-RESOURCES-MIB::hrProcessorLoad.3 = INTEGER: 0
+HOST-RESOURCES-MIB::hrProcessorLoad.4 = INTEGER: 0
+HOST-RESOURCES-MIB::hrProcessorLoad.5 = INTEGER: 0
+HOST-RESOURCES-MIB::hrProcessorLoad.6 = INTEGER: 0
+HOST-RESOURCES-MIB::hrProcessorLoad.7 = INTEGER: 0
+HOST-RESOURCES-MIB::hrProcessorLoad.8 = INTEGER: 0
+HOST-RESOURCES-MIB::hrProcessorLoad.9 = INTEGER: 0
+HOST-RESOURCES-MIB::hrProcessorLoad.10 = INTEGER: 0
+[root@securemeters-DR-monitoring ~]#
+
+====
+
+
+TMFL : 172.26.114.24
+
+===
+
+
+
+
+ [root@securemeters-DR-monitoring externalscripts]# sudo -u zabbix /usr/lib/zabbix/externalscripts/memory_utilization.sh 172.19.7.78
+55
+[root@securemeters-DR-monitoring externalscripts]#
+
+
+
+Memory backup : 
+
+[root@securemeters-DR-monitoring externalscripts]# cat memory_utilization.sh
+#!/bin/bash
+HOST=$1
+COMMUNITY="SECURE-HYD"
+
+# Get allocation units, total and used memory
+ALLOC_UNITS=$(/usr/bin/snmpget -v 2c -c $COMMUNITY $HOST .1.3.6.1.2.1.25.2.3.1.4.1 -Oqv)
+TOTAL_UNITS=$(/usr/bin/snmpget -v 2c -c $COMMUNITY $HOST .1.3.6.1.2.1.25.2.3.1.5.1 -Oqv)
+USED_UNITS=$(/usr/bin/snmpget -v 2c -c $COMMUNITY $HOST .1.3.6.1.2.1.25.2.3.1.6.1 -Oqv)
+
+# Calculate percentage
+if [ -n "$TOTAL_UNITS" ] && [ "$TOTAL_UNITS" -gt 0 ]; then
+  PERCENTAGE=$((USED_UNITS * 100 / TOTAL_UNITS))
+  echo "$PERCENTAGE"
+else
+  echo "0"
+fi
+
+
+===
+
+Improved script : 
+
+[root@securemeters-DR-monitoring externalscripts]# cat memory_utilization.sh
+#!/bin/bash
+HOST=$1
+COMMUNITY="SECURE-HYD"
+
+# Get allocation units, total and used memory
+ALLOC_UNITS=$(/usr/bin/snmpget -v 2c -c $COMMUNITY $HOST .1.3.6.1.2.1.25.2.3.1.4.1 -Oqv)
+TOTAL_UNITS=$(/usr/bin/snmpget -v 2c -c $COMMUNITY $HOST .1.3.6.1.2.1.25.2.3.1.5.1 -Oqv)
+USED_UNITS=$(/usr/bin/snmpget -v 2c -c $COMMUNITY $HOST .1.3.6.1.2.1.25.2.3.1.6.1 -Oqv)
+
+# Add timestamp for debugging (optional)
+# echo "Values at $(date): TOTAL=$TOTAL_UNITS USED=$USED_UNITS" >> /tmp/memory_debug.log
+
+# Calculate percentage
+if [ -n "$TOTAL_UNITS" ] && [ "$TOTAL_UNITS" -gt 0 ]; then
+  PERCENTAGE=$((USED_UNITS * 100 / TOTAL_UNITS))
+  echo "$PERCENTAGE"
+else
+  echo "0"
+fi
+
+
+-===============================
+
+
+[root@securemeters-DR-monitoring externalscripts]# cat cpu_discovery.sh
+#!/bin/bash
+HOST=$1  # Host IP will be passed by Zabbix when executing
+COMMUNITY="SECURE-HYD"
+
+# Get all CPU indexes
+INDEXES=$(snmpwalk -v 2c -c $COMMUNITY $HOST .1.3.6.1.2.1.25.3.3.1.2 | awk '{print $1}' | awk -F. '{print $NF}')
+
+# Start JSON
+echo -n '{"data":['
+
+# First flag to handle commas
+FIRST=1
+
+# Loop through all CPU indexes
+for INDEX in $INDEXES; do
+  if [ $FIRST -eq 1 ]; then
+    FIRST=0
+  else
+    echo -n ','
+  fi
+  echo -n "{\"{#CPUINDEX}\":\"$INDEX\"}"
+done
+
+# End JSON
+echo -n ']}'
+[root@securemeters-DR-monitoring externalscripts]#
+
+
+===========================
+
+
+[root@securemeters-DR-monitoring externalscripts]# cat cpu_discovery_dynamic.sh
+#!/bin/bash
+HOST=$1  # Host IP will be passed by Zabbix when executing
+COMMUNITY="SECURE-HYD"
+
+# Get all CPU indexes
+INDEXES=$(/usr/bin/snmpwalk -v 2c -c $COMMUNITY $HOST .1.3.6.1.2.1.25.3.3.1.2 | /usr/bin/awk '{print $1}' | /usr/bin/awk -F. '{print $NF}')
+
+# Start JSON
+echo -n '{"data":['
+
+# First flag to handle commas
+FIRST=1
+
+# Loop through all CPU indexes
+for INDEX in $INDEXES; do
+  if [ $FIRST -eq 1 ]; then
+    FIRST=0
+  else
+    echo -n ','
+  fi
+  echo -n "{\"{#CPUINDEX}\":\"$INDEX\"}"
+done
+
+# End JSON
+echo -n ']}'
+[root@securemeters-DR-monitoring externalscripts]#
+
+
+=====================================
+
+
+echo -n ']}'
+[root@securemeters-DR-monitoring externalscripts]# cat cpu_average.sh
+#!/bin/bash
+HOST=$1
+COMMUNITY="SECURE-HYD"
+
+# Get CPU values and calculate average
+CPU_DATA=$(/usr/bin/snmpwalk -v 2c -c $COMMUNITY $HOST .1.3.6.1.2.1.25.3.3.1.2)
+SUM=0
+COUNT=0
+
+while read -r line; do
+  VALUE=$(echo "$line" | awk '{print $4}')
+  SUM=$((SUM + VALUE))
+  COUNT=$((COUNT + 1))
+done <<< "$CPU_DATA"
+
+# Output the average
+if [ $COUNT -gt 0 ]; then
+  echo $((SUM / COUNT))
+else
+  echo 0
+fi
+[root@securemeters-DR-monitoring externalscripts]#
+
+
+new implement :
+
+172.19.7.13
+
+
+192.168.188.135
+
+
+zabbix logins :
+
+
+zabbix 5.0 Dashboard IP : 202.65.137.25 (public IP), Private IP :192.168.12.10
+ 
+credentials:
+ 
+cs-ms-aiops
+Aiops@1234$#$
+ 
+Zabbix 6.4 Dashboard DB IP: 192.168.12.60, 198.18.42.248
+ 
+credentials:
+
+
+ssh root@192.168.12.60
+
+ssh root@192.168.12.69
+ 
+root
+PageSting84
+
+ReV@|!@4320@VPN
+
+
+Zabbix6:
+
+APP: 
+
+IP: 192.168.12.60
+
+User:
+
+Password:
+ 
+Web:
+
+IP: 192.168.12.61
+
+User:
+
+Password:
+ 
+DB:
+
+MySQL: 
+
+IP: 192.168.12.65
+
+ssh root@192.168.12.65
+
+User: root
+
+Password:sJ4xvg4xwUp3amfe
+
+Server:
+	
+IP: 192.168.12.65
+
+User: root
+
+Password:PageSting84
+
+WEB : 
+
+192.168.12.62
+
+
+Zabbix Master-Slave or High Availability;
+
+192.168.12.65 and 192.168.12.68  (2 IPs) 
+
+192.168.12.66
+
+192.168.12.69
+
+
+
+ 
+ 
+ mysql> SHOW VARIABLES LIKE '%lock_wait_timeout%';
++--------------------------+----------+
+| Variable_name            | Value    |
++--------------------------+----------+
+| innodb_lock_wait_timeout | 50       |
+| lock_wait_timeout        | 31536000 |
++--------------------------+----------+
+2 rows in set (0.00 sec)
+
+mysql>
+
+
+
+Changes Made : 
+
+StartDBsync : 50 to 8
+
+locwait : 50 to 120 / 600 
+
+reverted chagnes
+
+docker exec 39d4ed65de41 sed -i 's/^StartDBSyncers=8/StartDBSyncers=50/' /etc/zabbix/zabbix_server.conf
+
+SET GLOBAL innodb_lock_wait_timeout = 50;
+SET SESSION innodb_lock_wait_timeout = 50;
+
+
+192.168.12.14
+
+ROOT
+
+Aiops@1234$#$
+
+
+
+[root@azb-proxy zabbix]# grep -E "^(StartPollers|StartTrappers|StartPreprocessors)" /etc/zabbix/zabbix_proxy.conf
+StartPollers=50
+StartPollersUnreachable=60
+[root@azb-proxy zabbix]# grep -E "^(StartTrappers|StartPreprocessors|StartPingers|StartDiscoverers)" /etc/zabbix/zabbix_proxy.conf
+StartPingers=60
+StartDiscoverers=20
+[root@azb-proxy zabbix]#
+
+
+
+ 49854:20250619:032804.834 failed to accept an incoming connection: connection from "157.230.182.160" rejected, allowed hosts: "103.248.80.67"
+ 49853:20250619:032805.233 failed to accept an incoming connection: connection from "157.230.182.160" rejected, allowed hosts: "103.248.80.67"
+ 49852:20250619:032805.626 failed to accept an incoming connection: connection from "157.230.182.160" rejected, allowed hosts: "103.248.80.67"
+ 49854:20250619:032806.023 failed to accept an incoming connection: connection from "157.230.182.160" rejected, allowed hosts: "103.248.80.67"
+ 49853:20250619:032806.452 failed to accept an incoming connection: connection from "157.230.182.160" rejected, allowed hosts: "103.248.80.67"
+ 49852:20250619:032806.852 failed to accept an incoming connection: connection from "157.230.182.160" rejected, allowed hosts: "103.248.80.67"
+ 49854:20250619:032807.260 failed to accept an incoming connection: connection from "157.230.182.160" rejected, allowed hosts: "103.248.80.67"
+ 49853:20250619:032807.668 failed to accept an incoming connection: connection from "157.230.182.160" rejected, allowed hosts: "103.248.80.67"
+ 49852:20250619:032808.066 failed to accept an incoming connection: connection from "157.230.182.160" rejected, allowed hosts: "103.248.80.67"
+ 49854:20250619:032808.458 failed to accept an incoming connection: connection from "157.230.182.160" rejected, allowed hosts: "103.248.80.67"
+ 49853:20250619:032808.853 failed to accept an incoming connection: connection from "157.230.182.160" rejected, allowed hosts: "103.248.80.67"
+ 49852:20250619:032809.261 failed to accept an incoming connection: connection from "157.230.182.160" rejected, allowed hosts: "103.248.80.67"
+ 49854:20250619:182924.000 Message from 103.248.80.67 is missing header. Message ignored.
+
+
+unsupported items query:
+
+-- Check remaining unsupported items to disable
+SELECT COUNT(*) as remaining_unsupported
+FROM items i
+JOIN item_rtdata r ON i.itemid = r.itemid
+WHERE i.status = 0 
+  AND r.state = 1;
+  
+  
+ =====================================
+ 
+ 
+ 
+ UPDATE items 
+SET status = 1 
+WHERE itemid IN (
+  SELECT itemid FROM (
+    SELECT i.itemid FROM items i
+    JOIN item_rtdata r ON i.itemid = r.itemid
+    WHERE i.status = 0 AND r.state = 1
+    LIMIT 10000
+  ) AS batch
+);
+
+
+
+  
+  
+  The issue was caused by a template that discovered multiple items, creating excessive load on the database. This resulted in false port down alerts for approximately 20-30 minutes.
+The issue has now been resolved. We apologize for any inconvenience caused and have implemented preventive measures to ensure this doesn't happen again in the future.
+
+Shaik@12345
+
+==========================================
+
+Emcure DB login : 
+
+docker exec -it zabbix-service-mysql mysql -u root -p'sJ4xvg4xwUp3amfe_'
+
+=====
+
+Monitored hosts:
+
+mysql> -- Check host status values
+    END as status_meaning
+FROM hosts
+GROUP BY status;mysql> SELECT DISTINCT
+    ->     status,
+    ->     COUNT(*) as count,
+    ->     CASE
+    ->         WHEN status = 0 THEN 'Monitored'
+    ->         WHEN status = 1 THEN 'Not monitored'
+    ->         WHEN status = 3 THEN 'Template'
+    ->         ELSE 'Unknown'
+    ->     END as status_meaning
+    -> FROM hosts
+    -> GROUP BY status;
++--------+-------+----------------+
+| status | count | status_meaning |
++--------+-------+----------------+
+|      0 | 15895 | Monitored      |
+|      1 |  3214 | Not monitored  |
+|      3 |   541 | Template       |
+|      5 |   243 | Unknown        |
++--------+-------+----------------+
+4 rows in set (0.00 sec)
+
+mysql>
+
