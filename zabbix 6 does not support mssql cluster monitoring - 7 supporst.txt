@@ -1,0 +1,217 @@
+Include=.\zabbix_agent2.d\plugins.d\*.conf
+
+
+### MSSQL Plugin Configuration
+
+# Enable MSSQL plugin
+Plugins.MSSQL.Enabled=true
+
+# System path for the MSSQL plugin
+Plugins.MSSQL.System.Path="C:\Windows\System32\dllhost.exe"
+
+# MSSQL connection timeout
+Plugins.MSSQL.Timeout=10
+
+# Connection keep alive period
+Plugins.MSSQL.KeepAlive=30
+
+# Connection pool size
+Plugins.MSSQL.Sessions.PoolSize=8
+
+# Connection timeout
+Plugins.MSSQL.ConnectTimeout=5
+
+# Path for credentials file (if used)
+# Plugins.MSSQL.System.DSN=
+
+
+=--- new : 
+
+Server=10.41.161.76,10.71.55.19
+
+### Option: ListenPort
+#	Agent will listen on this port for connections from the server.
+#
+# Mandatory: no
+# Range: 1024-32767
+# Default:
+# ListenPort=10050
+
+
+### Option: ListenIP
+#	List of comma delimited IP addresses that the agent should listen on.
+#	First IP address is sent to Zabbix server if connecting to it to retrieve list of active checks.
+#
+# Mandatory: no
+# Default:
+# ListenIP=0.0.0.0
+
+
+### Option: StatusPort
+#	Agent will listen on this port for HTTP status requests.
+#
+# Mandatory: no
+# Range: 1024-32767
+# Default:
+# StatusPort=
+
+
+##### Active checks related
+
+### Option: ServerActive
+#	Zabbix server/proxy address or cluster configuration to get active checks from.
+#	Server/proxy address is IP address or DNS name and optional port separated by colon.
+#	Cluster configuration is one or more server addresses separated by semicolon.
+#	Multiple Zabbix servers/clusters and Zabbix proxies can be specified, separated by comma.
+#	More than one Zabbix proxy should not be specified from each Zabbix server/cluster.
+#	If Zabbix proxy is specified then Zabbix server/cluster for that proxy should not be specified.
+#	Multiple comma-delimited addresses can be provided to use several independent Zabbix servers in parallel. Spaces are allowed.
+#	If port is not specified, default port is used.
+#	IPv6 addresses must be enclosed in square brackets if port for that host is specified.
+#	If port is not specified, square brackets for IPv6 addresses are optional.
+#	If this parameter is not specified, active checks are disabled.
+#	Example for Zabbix proxy:
+#		ServerActive=127.0.0.1:10051
+#	Example for multiple servers:
+#		ServerActive=127.0.0.1:20051,zabbix.domain,[::1]:30051,::1,[12fc::1]
+#	Example for high availability:
+#		ServerActive=zabbix.cluster.node1;zabbix.cluster.node2:20051;zabbix.cluster.node3
+#	Example for high availability with two clusters and one server:
+#		ServerActive=zabbix.cluster.node1;zabbix.cluster.node2:20051,zabbix.cluster2.node1;zabbix.cluster2.node2,zabbix.domain
+#
+# Mandatory: no
+# Default:
+# ServerActive=
+
+ServerActive=10.41.161.76,10.71.55.19
+
+
+backup : 
+
+copy "C:\Program Files\Zabbix Agent 2\zabbix_agent2.conf" "C:\Program Files\Zabbix Agent 2\zabbix_agent2.conf.bak"
+
+---
+
+basic agent conf
+LogFile=C:\Program Files\Zabbix Agent 2\zabbix_agent2.log
+Server=10.41.161.76,10.71.55.19
+ServerActive=10.41.161.76,10.71.55.19
+Hostname=E2DB3WP-7001
+
+# MSSQL plugin configuration
+Plugins.MSSQL.Enabled=true
+
+
+
+C:\Windows\system32>netsh advfirewall firewall show rule name=all | findstr 10051
+
+C:\Windows\system32>netsh advfirewall firewall show rule name=all | findstr 10050
+LocalPort:                            10050
+
+C:\Windows\system32>"C:\Program Files\Zabbix Agent 2\zabbix_agent2.exe" -t "mssql.ping[cluster]"
+mssql.ping[cluster]                           [m|ZBX_NOTSUPPORTED] [Unknown metric mssql.ping]
+
+C:\Windows\system32>
+
+
+
+
+
+Tested :
+
+Instlled agent2 
+
+agent conf: 
+
+LogFile=C:\Program Files\Zabbix Agent 2\zabbix_agent2.log
+Server=10.41.161.76,10.71.55.19
+#ServerActive=10.41.161.76,10.71.55.19
+Hostname=E2DB3WP-7001
+
+# MSSQL plugin configuration
+#Plugins.MSSQL.Enabled=true
+
+
+
+# MSSQL plugin configuration
+Plugins.MSSQL.Enabled=true
+#Plugins.MSSQL.System.Path=C:\Windows\System32\dllhost.exe
+Plugins.MSSQL.Timeout=10
+Plugins.MSSQL.KeepAlive=30
+Plugins.MSSQL.Sessions.PoolSize=8
+Plugins.MSSQL.ConnectTimeout=5
+
+# Include plugin configurations
+Include=C:\Program Files\Zabbix Agent 2\zabbix_agent2.d\plugins.d\*.conf
+
+--------
+
+added mssql.conf and credentials in pulgins.d
+
+
+mssql.conf
+
+#Plugins.MSSQL.System.Path=C:\Windows\System32\dllhost.exe
+Plugins.MSSQL.Timeout=10
+Plugins.MSSQL.KeepAlive=30
+Plugins.MSSQL.Sessions.PoolSize=8
+Plugins.MSSQL.ConnectTimeout=5
+
+-------
+
+mssql.win.credentials
+
+Plugins.MSSQL.Sessions.cluster.Uri=tcp://10.71.38.13:14999
+Plugins.MSSQL.Sessions.cluster.User=zabbix_ctrls
+Plugins.MSSQL.Sessions.cluster.Password=Ctrls@123
+
+-----------------------------
+
+
+
+
+
+Conclusion : 
+
+C:\Users\8000850>"C:\Program Files\Zabbix Agent 2\zabbix_agent2.exe" -V
+zabbix_agent2 Win64 (Zabbix) 6.2.7
+Revision d7e8df54d76 1 February 2023, compilation time: 2023-03-07 13:46:19
+Plugin communication protocol version is 6.2.7
+
+Copyright (C) 2023 Zabbix SIA
+License GPLv2+: GNU GPL version 2 or later <https://www.gnu.org/licenses/>.
+This is free software: you are free to change and redistribute it according to
+the license. There is NO WARRANTY, to the extent permitted by law.
+
+This product includes software developed by the OpenSSL Project
+for use in the OpenSSL Toolkit (http://www.openssl.org/).
+
+Compiled with OpenSSL 3.0.8 7 Feb 2023
+Running with OpenSSL 3.0.8 7 Feb 2023
+
+We use the library Eclipse Paho (eclipse/paho.mqtt.golang), which is
+distributed under the terms of the Eclipse Distribution License 1.0 (The 3-Clause BSD License)
+available at https://www.eclipse.org/org/documents/edl-v10.php
+
+We use the library go-modbus (goburrow/modbus), which is
+distributed under the terms of the 3-Clause BSD License
+available at https://github.com/goburrow/modbus/blob/master/LICENSE
+
+C:\Users\8000850>"C:\Program Files\Zabbix Agent 2\zabbix_agent2.exe" -t "mssql.version[cluster]"
+mssql.version[cluster]                        [m|ZBX_NOTSUPPORTED] [Unknown metric mssql.version]
+
+C:\Users\8000850>"C:\Program Files\Zabbix Agent 2\zabbix_agent2.exe" -t "mssql.db.discovery[cluster]"
+mssql.db.discovery[cluster]                   [m|ZBX_NOTSUPPORTED] [Unknown metric mssql.db.discovery]
+
+C:\Users\8000850>
+
+Zabbix Agent 2 installation doesn't include the MSSQL plugin functionality.
+
+
+
+
+
+
+
+
+

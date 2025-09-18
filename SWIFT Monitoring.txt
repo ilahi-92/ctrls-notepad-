@@ -1,0 +1,42 @@
+process for copying files
+
+Hi Jinson,
+ 
+We have configured DFS replication as requested, and the required ports  are allowed at the network firewall level, we have removed full access (any to any)
+ 
+Please find the screenshot below as an artifact indicating that replication is working as expected. We have created multiple test folders to ensure proper functionality.  
+ 
+We will continue monitoring the replication for a day or two before providing a final confirmation. Unfortunately, PowerShell is not enabled on this server, preventing us from setting up Task Scheduler logs for real-time replication status updates, as DFSR commands are only available in PowerShell.  
+ 
+Additionally, we would like to understand the application functionality on this server to determine if it could be interfering with the replication process. We can schedule a call at your convenience to discuss this further.  
+ 
+Lastly, we kindly request that no changes be made to the local firewall policies on the server, as this may disrupt the replication process.
+
+
+
+
+Hi Jinson,
+ 
+We are unable to copy-paste or use PowerShell on those servers to create a scheduled task.  
+ 
+Therefore, I sent the script directly to you so that you can run it while excluding the policies in PAM.
+ 
+Please let me know if you want have a call to discuss this further.
+ 
+Thanks & Regards
+ 
+S. Dilip Kumar
+
+
+Hi Rahul,
+ 
+I just discussed this with Jinson. Currently, to monitor this via scripts, we need PowerShell ISE and copy-paste options enabled on the server, which are currently blocked by group policies. Although the script has been copied to the server, making modifications in case of errors is challenging since manually typing everything would be time-consuming.
+
+
+DFS replication is being used to copy files between your PROD and DR servers
+PowerShell access is restricted on these servers, which has been causing challenges
+There may be group policies restricting certain activities on these servers
+
+DFS replicatoin has it own reporting machanism
+
+dfs built in reporting

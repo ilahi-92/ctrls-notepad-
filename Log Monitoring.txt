@@ -1,0 +1,550 @@
+VMname:ZabbixTest_VM1
+IP:202.143.97.184
+
+messages 
+
+cd /var/log/messages
+
+systemctl status rsyslog
+
+
+# Check SAR logs location
+ls -l /var/log/sa/
+
+# Check ATOP logs location
+ls -l /var/log/atop/
+
+===============================================
+
+
+ls -l /var/log/sa/sa11
+
+sudo systemctl start sysstat
+sudo systemctl restart sysstat-collect.timer
+sudo systemctl start sysstat-collect.service
+
+
+sar
+
+sudo systemctl stop sysstat
+
+====================================================================
+
+atop
+
+if atop is not installed.
+
+rpm -q atop
+
+sudo dnf install atop
+
+
+  982  sudo systemctl start atop
+  983  sudo systemctl enable atop
+  
+  
+========================================
+
+
+custom scripts to log mointor SAR and ATOP. (cd/usr/local/bin)
+
+-rwxr-xr-x 1 zabbix zabbix 720 Feb 10 12:36 sarlog_monitor.sh
+-rwxr-xr-x 1 zabbix zabbix 735 Feb 10 12:36 atop_monitor.sh
+
+TEST : 
+
+sudo -u zabbix /usr/local/bin/sarlog_monitor.sh
+
+sudo -u zabbix /usr/local/bin/atop_monitor.sh
+
+
+------------file not found.
+
+[root@ZabbixTestVM1 bin]# sudo -u zabbix /usr/local/bin/atop_monitor.sh
+Warning: Expected ATOP log file /var/log/atop/atop_20250211 not found for today.
+
+===========================================
+
+
+Start : 
+
+sudo systemctl start sysstat
+
+sudo systemctl restart sysstat-collect.timer
+
+sudo systemctl start sudo systemctl start sysstat-collect.service
+
+sudo systemctl start atop.
+
+=============================================
+
+
+Stop
+
+sudo systemctl stop sysstat
+
+sudo systemctl stop sysstat-collect.timer
+
+sudo systemctl stop sudo systemctl start sysstat-collect.service
+
+sudo systemctl stop atop.
+
+================================================
+
+Last modified.
+
+ls -l /var/log/sa/sa$(date +"%d")
+
+ls -l /var/log/atop/atop_$(date +"%Y%m%d")
+
+
+================================================================================================================
+
+
+Automation Script : 
+
+#!/bin/bash
+# Log Monitoring Deployment Script
+# This script automates the setup of SAR and ATOP monitoring in Zabbix
+
+# Exit on any error
+set -e
+
+# Check if running as root
+if [ "$EUID" -ne 0 ]; then
+  echo "Please run as root"
+  exit 1
+fi
+
+echo "==== Log Monitoring Deployment Script ===="
+echo "Setting up SAR and ATOP monitoring for Zabbix"
+echo
+
+# Step 1: Create scripts directory if it doesn't exist
+echo "Creating scripts directory..."
+mkdir -p /usr/local/bin
+
+# Step 2: Create SAR monitoring script
+echo "Creating SAR monitoring script..."
+cat > /usr/local/bin/sarlog_monitor.sh << 'EOL'
+#!/bin/bash
+cd /
+SAR_LOG_DIR="/var/log/sa"
+THRESHOLD_MINUTES=11
+CURRENT_DAY=$(date +"%d")
+EXPECTED_LOG="sa${CURRENT_DAY}"
+EXPECTED_LOG_PATH="${SAR_LOG_DIR}/${EXPECTED_LOG}"
+
+# Check if timer is active
+if ! systemctl is-active sysstat-collect.timer >/dev/null 2>&1; then
+    echo "1"  # Service not running
+    exit 1
+fi
+
+# Directory check
+if [ ! -d "$SAR_LOG_DIR" ]; then
+    echo "1"  # Directory doesn't exist
+    exit 1
+fi
+
+# File check
+if [ ! -f "$EXPECTED_LOG_PATH" ]; then
+    echo "1"  # Today's file doesn't exist
+    exit 1
+fi
+
+# Check modification time
+if find "$EXPECTED_LOG_PATH" -mmin -"$THRESHOLD_MINUTES" | grep -q .; then
+    echo "0"  # OK - File updated within threshold
+    exit 0
+else
+    echo "1"  # Warning - File not updated
+    exit 1
+fi
+EOL
+
+# Step 3: Create ATOP monitoring script
+echo "Creating ATOP monitoring script..."
+cat > /usr/local/bin/atop_monitor.sh << 'EOL'
+#!/bin/bash
+cd /
+ATOP_LOG_DIR="/var/log/atop"
+THRESHOLD_MINUTES=11
+CURRENT_DAY=$(date +"%Y%m%d")
+EXPECTED_LOG="atop_${CURRENT_DAY}"
+EXPECTED_LOG_PATH="${ATOP_LOG_DIR}/${EXPECTED_LOG}"
+
+# Directory check
+if [ ! -d "$ATOP_LOG_DIR" ]; then
+    echo "1"  # Directory doesn't exist
+    exit 1
+fi
+
+# File check - if today's file doesn't exist, check if yesterday's is being updated
+if [ ! -f "$EXPECTED_LOG_PATH" ]; then
+    YESTERDAY=$(date -d "yesterday" +"%Y%m%d")
+    YESTERDAY_LOG="atop_${YESTERDAY}"
+    YESTERDAY_PATH="${ATOP_LOG_DIR}/${YESTERDAY_LOG}"
+
+    if [ ! -f "$YESTERDAY_PATH" ]; then
+        echo "1"  # Neither today's nor yesterday's file exists
+        exit 1
+    fi
+
+    # Use yesterday's file for check
+    EXPECTED_LOG_PATH=$YESTERDAY_PATH
+fi
+
+# Check modification time
+if find "$EXPECTED_LOG_PATH" -mmin -"$THRESHOLD_MINUTES" | grep -q .; then
+    echo "0"  # OK - File updated within threshold
+    exit 0
+else
+    echo "1"  # Warning - File not updated
+    exit 1
+fi
+
+
+# Check modification time
+if find "$EXPECTED_LOG_PATH" -mmin -"$THRESHOLD_MINUTES" | grep -q .; then
+    echo "0"  # OK - File updated within threshold
+    exit 0
+else
+    echo "1"  # Warning - File not updated
+    exit 1
+fi
+EOL
+
+# Step 4: Set permissions
+echo "Setting script permissions..."
+chmod 755 /usr/local/bin/sarlog_monitor.sh
+chmod 755 /usr/local/bin/atop_monitor.sh
+chown zabbix:zabbix /usr/local/bin/sarlog_monitor.sh
+chown zabbix:zabbix /usr/local/bin/atop_monitor.sh
+
+# Step 5: Create Zabbix agent configuration
+echo "Creating Zabbix agent user parameters..."
+mkdir -p /etc/zabbix/zabbix_agentd.d
+
+cat > /etc/zabbix/zabbix_agentd.d/userparameter_logs.conf << 'EOL'
+UserParameter=custom.sar.log.check,/usr/local/bin/sarlog_monitor.sh
+UserParameter=custom.atop.log.check,/usr/local/bin/atop_monitor.sh
+EOL
+
+# Step 6: Set Zabbix config permissions
+echo "Setting Zabbix configuration permissions..."
+chmod 644 /etc/zabbix/zabbix_agentd.d/userparameter_logs.conf
+chown zabbix:zabbix /etc/zabbix/zabbix_agentd.d/userparameter_logs.conf
+
+# Step 7: Enable and start services
+echo "Ensuring services are enabled..."
+systemctl enable sysstat-collect.timer
+systemctl enable atop
+
+echo "Starting services..."
+systemctl start sysstat-collect.timer
+systemctl start atop
+systemctl restart zabbix-agent
+
+# Step 8: Final verification
+echo
+echo "===== Verification ====="
+echo "Testing scripts..."
+echo -n "SAR script result: "
+sudo -u zabbix /usr/local/bin/sarlog_monitor.sh
+echo -n "ATOP script result: "
+sudo -u zabbix /usr/local/bin/atop_monitor.sh
+
+echo
+echo "Checking service status..."
+echo "SAR timer status:"
+systemctl status sysstat-collect.timer --no-pager
+echo
+echo "ATOP status:"
+systemctl status atop --no-pager
+echo
+echo "Zabbix agent status:"
+systemctl status zabbix-agent --no-pager
+
+echo
+echo "===== Next Steps ====="
+echo "1. In Zabbix web interface, create items:"
+echo "   - custom.sar.log.check"
+echo "   - custom.atop.log.check"
+echo "2. Create triggers to alert when item value = 1"
+echo "3. Create trigger for messages: change(vfs.file.time[/var/log/messages,modify])=0"
+echo
+echo "Installation complete! Logs are now being monitored."
+
+============================================================================================
+
+2nd File
+
+ 
+HYDCloudMon75987_Proxy6.0_198.18.254.42 - High - /var: Disk Space Is Low Used 90.0171 % Used 90.0171 % Total 9.99 GB
+ 
+ 
+ 
+Medplus_zabbixprxy_virtual_172.18.25.9_198.18.20.109 - High - /var: Disk Space Is Low Used 93.9972 % Used 93.9972 % Total 9.99 GB
+ 
+ 
+ 
+MUMCloudMon75989_Proxy6.0_198.19.23.60 - High - /var: Disk Space Is Low Used 94.0024 % Used 94.0024 % Total 9.99 GB
+
+198.18.254.42-root-Information@1234
+198.19.23.60-root-Information@1234
+198.18.20.109-root-Information@1234
+
+==============================================================================
+
+setup_log_monitoring.sh
+
+
+#!/bin/bash
+# Log Monitoring Deployment Script
+# This script automates the setup of SAR and ATOP monitoring in Zabbix
+
+# Exit on any error
+set -e
+
+# Check if running as root
+if [ "$EUID" -ne 0 ]; then
+  echo "Please run as root"
+  exit 1
+fi
+
+echo "==== Log Monitoring Deployment Script ===="
+echo "Setting up SAR and ATOP monitoring for Zabbix"
+echo
+
+# Step 1: Create scripts directory if it doesn't exist
+echo "Creating scripts directory..."
+mkdir -p /usr/local/bin
+
+# Step 2: Create SAR monitoring script
+echo "Creating SAR monitoring script..."
+cat > /usr/local/bin/sarlog_monitor.sh << 'EOL'
+#!/bin/bash
+cd /
+SAR_LOG_DIR="/var/log/sa"
+THRESHOLD_MINUTES=11
+CURRENT_DAY=$(date +"%d")
+EXPECTED_LOG="sa${CURRENT_DAY}"
+EXPECTED_LOG_PATH="${SAR_LOG_DIR}/${EXPECTED_LOG}"
+
+# Check if timer is active
+if ! systemctl is-active sysstat-collect.timer >/dev/null 2>&1; then
+    echo "1"  # Service not running
+    exit 1
+fi
+
+# Directory check
+if [ ! -d "$SAR_LOG_DIR" ]; then
+    echo "1"  # Directory doesn't exist
+    exit 1
+fi
+
+# File check
+if [ ! -f "$EXPECTED_LOG_PATH" ]; then
+    echo "1"  # Today's file doesn't exist
+    exit 1
+fi
+
+# Check modification time
+if find "$EXPECTED_LOG_PATH" -mmin -"$THRESHOLD_MINUTES" | grep -q .; then
+    echo "0"  # OK - File updated within threshold
+    exit 0
+else
+    echo "1"  # Warning - File not updated
+    exit 1
+fi
+EOL
+
+# Step 3: Create ATOP monitoring script
+echo "Creating ATOP monitoring script..."
+cat > /usr/local/bin/atop_monitor.sh << 'EOL'
+#!/bin/bash
+cd /
+ATOP_LOG_DIR="/var/log/atop"
+THRESHOLD_MINUTES=11
+CURRENT_DAY=$(date +"%Y%m%d")
+EXPECTED_LOG="atop_${CURRENT_DAY}"
+EXPECTED_LOG_PATH="${ATOP_LOG_DIR}/${EXPECTED_LOG}"
+
+# Directory check
+if [ ! -d "$ATOP_LOG_DIR" ]; then
+    echo "1"  # Directory doesn't exist
+    exit 1
+fi
+
+# File check - if today's file doesn't exist, check if yesterday's is being updated
+if [ ! -f "$EXPECTED_LOG_PATH" ]; then
+    YESTERDAY=$(date -d "yesterday" +"%Y%m%d")
+    YESTERDAY_LOG="atop_${YESTERDAY}"
+    YESTERDAY_PATH="${ATOP_LOG_DIR}/${YESTERDAY_LOG}"
+
+    if [ ! -f "$YESTERDAY_PATH" ]; then
+        echo "1"  # Neither today's nor yesterday's file exists
+        exit 1
+    fi
+
+    # Use yesterday's file for check
+    EXPECTED_LOG_PATH=$YESTERDAY_PATH
+fi
+
+# Check modification time
+if find "$EXPECTED_LOG_PATH" -mmin -"$THRESHOLD_MINUTES" | grep -q .; then
+    echo "0"  # OK - File updated within threshold
+    exit 0
+else
+    echo "1"  # Warning - File not updated
+    exit 1
+fi
+
+
+# Check modification time
+if find "$EXPECTED_LOG_PATH" -mmin -"$THRESHOLD_MINUTES" | grep -q .; then
+    echo "0"  # OK - File updated within threshold
+    exit 0
+else
+    echo "1"  # Warning - File not updated
+    exit 1
+fi
+EOL
+
+# Step 4: Set permissions
+echo "Setting script permissions..."
+chmod 755 /usr/local/bin/sarlog_monitor.sh
+chmod 755 /usr/local/bin/atop_monitor.sh
+chown zabbix:zabbix /usr/local/bin/sarlog_monitor.sh
+chown zabbix:zabbix /usr/local/bin/atop_monitor.sh
+
+# Step 5: Create Zabbix agent configuration
+echo "Creating Zabbix agent user parameters..."
+mkdir -p /etc/zabbix/zabbix_agentd.d
+
+cat > /etc/zabbix/zabbix_agentd.d/userparameter_logs.conf << 'EOL'
+UserParameter=custom.sar.log.check,/usr/local/bin/sarlog_monitor.sh
+UserParameter=custom.atop.log.check,/usr/local/bin/atop_monitor.sh
+EOL
+
+# Step 6: Set Zabbix config permissions
+echo "Setting Zabbix configuration permissions..."
+chmod 644 /etc/zabbix/zabbix_agentd.d/userparameter_logs.conf
+chown zabbix:zabbix /etc/zabbix/zabbix_agentd.d/userparameter_logs.conf
+
+# Step 7: Enable and start services
+echo "Ensuring services are enabled..."
+systemctl enable sysstat-collect.timer
+systemctl enable atop
+
+echo "Starting services..."
+systemctl start sysstat-collect.timer
+systemctl start atop
+systemctl restart zabbix-agent
+
+# Step 8: Final verification
+echo
+echo "===== Verification ====="
+echo "Testing scripts..."
+echo -n "SAR script result: "
+sudo -u zabbix /usr/local/bin/sarlog_monitor.sh
+echo -n "ATOP script result: "
+sudo -u zabbix /usr/local/bin/atop_monitor.sh
+
+echo
+echo "Checking service status..."
+echo "SAR timer status:"
+systemctl status sysstat-collect.timer --no-pager
+echo
+echo "ATOP status:"
+systemctl status atop --no-pager
+echo
+echo "Zabbix agent status:"
+systemctl status zabbix-agent --no-pager
+
+echo
+echo "===== Next Steps ====="
+echo "1. In Zabbix web interface, create items:"
+echo "   - custom.sar.log.check"
+echo "   - custom.atop.log.check"
+echo "2. Create triggers to alert when item value = 1"
+echo "3. Create trigger for messages: change(vfs.file.time[/var/log/messages,modify])=0"
+echo
+echo "Installation complete! Logs are now being monitored."
+
+
+
+=====================================
+
+Test : 
+
+sudo -u zabbix /usr/local/bin/atop_monitor.sh
+sudo -u zabbix /usr/local/bin/sarlog_monitor.sh
+
+=================================================
+
+# Give read access to the atop directory for others
+sudo chmod o+rx /var/log/atop
+
+# Give read access to all atop log files for others
+sudo chmod o+r /var/log/atop/*
+
+
+=======================================================
+
+
+# Check log files
+ls -l /var/log/sa/sa$(date +"%d")
+ls -l /var/log/atop/atop_$(date +"%Y%m%d")
+
+
+==============================================
+
+Save it as setup_log_monitoring.sh
+Make it executable: chmod +x setup_log_monitoring.sh
+Run as root: sudo ./setup_log_monitoring.sh
+
+
+Issues :  Messages :
+
+1 min poll interval : throws error because its sometimes rsyslog is not writing for 10mins.
+
+
+Mar 11 15:16:23 MUMCLOUDMON75989 systemd[1]: run-user-1001.mount: Succeeded.
+Mar 11 15:16:23 MUMCLOUDMON75989 systemd[1]: user-runtime-dir@1001.service: Succeeded.
+Mar 11 15:16:23 MUMCLOUDMON75989 systemd[1]: Stopped User runtime directory /run/user/1001.
+Mar 11 15:16:23 MUMCLOUDMON75989 systemd[1]: Removed slice User Slice of UID 1001.
+Mar 11 15:20:02 MUMCLOUDMON75989 systemd[1]: Starting system activity accounting tool...
+Mar 11 15:20:02 MUMCLOUDMON75989 systemd[1]: sysstat-collect.service: Succeeded.
+Mar 11 15:20:02 MUMCLOUDMON75989 systemd[1]: Started system activity accounting tool.
+Mar 11 15:30:02 MUMCLOUDMON75989 systemd[1]: Starting system activity accounting tool...
+Mar 11 15:30:02 MUMCLOUDMON75989 systemd[1]: sysstat-collect.service: Succeeded.
+Mar 11 15:30:02 MUMCLOUDMON75989 systemd[1]: Started system activity accounting tool.
+Mar 11 15:33:23 MUMCLOUDMON75989 systemd[1]: Starting dnf makecache...
+Mar 11 15:33:23 MUMCLOUDMON75989 dnf[1724624]: Metadata cache refreshed recently.
+Mar 11 15:33:23 MUMCLOUDMON75989 systemd[1]: dnf-makecache.service: Succeeded.
+Mar 11 15:33:23 MUMCLOUDMON75989 systemd[1]: Started dnf makecache.
+Mar 11 15:40:02 MUMCLOUDMON75989 systemd[1]: Starting system activity accounting tool...
+Mar 11 15:40:02 MUMCLOUDMON75989 systemd[1]: sysstat-collect.service: Succeeded.
+Mar 11 15:40:02 MUMCLOUDMON75989 systemd[1]: Started system activity accounting tool.
+Mar 11 15:43:29 MUMCLOUDMON75989 systemd[1]: Created slice User Slice of UID 0.
+Mar 11 15:43:29 MUMCLOUDMON75989 systemd[1]: Starting User runtime directory /run/user/0...
+Mar 11 15:43:29 MUMCLOUDMON75989 systemd-logind[983]: New session 1137 of user root.
+Mar 11 15:43:29 MUMCLOUDMON75989 systemd[1]: Started User runtime directory /run/user/0.
+Mar 11 15:43:29 MUMCLOUDMON75989 systemd[1]: Starting User Manager for UID 0...
+Mar 11 15:43:29 MUMCLOUDMON75989 systemd[1726899]: Listening on Multimedia System.
+Mar 11 15:43:29 MUMCLOUDMON75989 systemd[1726899]: Reached target Paths.
+Mar 11 15:43:29 MUMCLOUDMON75989 systemd[1726899]: Starting D-Bus User Message Bus Socket.
+Mar 11 15:43:29 MUMCLOUDMON75989 systemd[1726899]: Reached target Timers.
+
+
+==========
+
+
+198.18.254.42-root-Information@1234
+198.19.23.60-root-Information@1234
+198.18.20.109-root-Information@1234
+ 
+ 
+ 

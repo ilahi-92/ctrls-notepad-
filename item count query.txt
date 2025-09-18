@@ -1,0 +1,322 @@
+root@credgenics-zabbix-proxy:~# # On credgenics proxy - same check
+sqlite3 /var/lib/sqlite/zabbix.db << 'EOF'
+.headers on
+.mode column
+SELECT 'history' as table_name, COUNT(*) as records FROM history
+UNION ALL
+SELECT 'history_uint', COUNT(*) FROM history_uint
+UNION ALL
+SELECT 'history_str', COUNT(*) FROM history_str
+UNION ALL
+SELECT 'history_text', COUNT(*) FROM history_text
+UNION ALL
+SELECT 'history_log', COUNT(*) FROM history_log
+UNION ALL
+SELECT 'trends', COUNT(*) FROM trends
+UNION ALL
+SELECT 'trends_uint', COUNT(*) FROM trends_uint
+ORDER BY records DESC;
+EOF
+table_name    records
+------------  -------
+history       0
+history_uint  0
+history_str   0
+history_text  0
+history_log   0
+trends        0
+trends_uint   0
+root@credgenics-zabbix-proxy:~# sqlite3 /var/lib/sqlite/zabbix.db << 'EOF'
+.headers on
+.mode column
+SELECT name as table_name,
+       COUNT(*) as records
+FROM sqlite_master
+WHERE type='table'
+AND name NOT LIKE 'sqlite_%'
+ORDER BY name;
+EOF
+table_name  records
+----------  -------
+role        186
+root@credgenics-zabbix-proxy:~# sqlite3 /var/lib/sqlite/zabbix.db << 'EOF'
+.headers on
+.mode column
+SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%';
+EOF
+name
+--------------------------
+role
+users
+maintenances
+hosts
+hstgrp
+group_prototype
+group_discovery
+drules
+dchecks
+httptest
+httpstep
+interface
+valuemap
+items
+httpstepitem
+httptestitem
+media_type
+media_type_param
+media_type_message
+usrgrp
+users_groups
+scripts
+script_param
+actions
+operations
+opmessage
+opmessage_grp
+opmessage_usr
+opcommand
+opcommand_hst
+opcommand_grp
+opgroup
+optemplate
+opconditions
+conditions
+config
+triggers
+trigger_depends
+functions
+graphs
+graphs_items
+graph_theme
+globalmacro
+hostmacro
+hosts_groups
+hosts_templates
+valuemap_mapping
+media
+rights
+services
+services_links
+icon_map
+icon_mapping
+sysmaps
+sysmaps_elements
+sysmaps_links
+sysmaps_link_triggers
+sysmap_element_url
+sysmap_url
+sysmap_user
+sysmap_usrgrp
+maintenances_hosts
+maintenances_groups
+timeperiods
+maintenances_windows
+regexps
+expressions
+ids
+alerts
+history
+history_uint
+history_str
+history_log
+history_text
+proxy_history
+proxy_dhistory
+events
+event_symptom
+trends
+trends_uint
+acknowledges
+auditlog
+service_alarms
+autoreg_host
+proxy_autoreg_host
+dhosts
+dservices
+escalations
+globalvars
+graph_discovery
+host_inventory
+housekeeper
+images
+item_discovery
+host_discovery
+interface_discovery
+profiles
+sessions
+trigger_discovery
+item_condition
+item_rtdata
+opinventory
+trigger_tag
+event_tag
+problem
+problem_tag
+tag_filter
+event_recovery
+correlation
+corr_condition
+corr_condition_tag
+corr_condition_group
+corr_condition_tagpair
+corr_condition_tagvalue
+corr_operation
+task
+task_close_problem
+item_preproc
+task_remote_command
+task_remote_command_result
+task_data
+task_result
+task_acknowledge
+sysmap_shape
+sysmap_element_trigger
+httptest_field
+httpstep_field
+dashboard
+dashboard_user
+dashboard_usrgrp
+dashboard_page
+widget
+widget_field
+task_check_now
+event_suppress
+maintenance_tag
+lld_macro_path
+host_tag
+config_autoreg_tls
+module
+interface_snmp
+lld_override
+lld_override_condition
+lld_override_operation
+lld_override_opstatus
+lld_override_opdiscover
+lld_override_opperiod
+lld_override_ophistory
+lld_override_optrends
+lld_override_opseverity
+lld_override_optag
+lld_override_optemplate
+lld_override_opinventory
+trigger_queue
+item_parameter
+role_rule
+token
+item_tag
+httptest_tag
+sysmaps_element_tag
+report
+report_param
+report_user
+report_usrgrp
+service_problem_tag
+service_problem
+service_tag
+service_status_rule
+ha_node
+sla
+sla_schedule
+sla_excluded_downtime
+sla_service_tag
+host_rtdata
+userdirectory
+userdirectory_ldap
+userdirectory_saml
+userdirectory_media
+userdirectory_usrgrp
+userdirectory_idpgroup
+changelog
+scim_group
+user_scim_group
+connector
+connector_tag
+dbversion
+root@credgenics-zabbix-proxy:~# sqlite3 /var/lib/sqlite/zabbix.db << 'EOF'
+SELECT 'hosts' as table_name, COUNT(*) as records FROM hosts
+UNION ALL
+SELECT 'items', COUNT(*) FROM items
+UNION ALL
+SELECT 'functions', COUNT(*) FROM functions
+UNION ALL
+SELECT 'triggers', COUNT(*) FROM triggers
+UNION ALL
+SELECT 'events', COUNT(*) FROM events
+UNION ALL
+SELECT 'alerts', COUNT(*) FROM alerts
+UNION ALL
+SELECT 'acknowledges', COUNT(*) FROM acknowledges
+UNION ALL
+SELECT 'auditlog', COUNT(*) FROM auditlog
+UNION ALL
+SELECT 'sessions', COUNT(*) FROM sessions
+ORDER BY records DESC;
+EOF
+items|384459
+hosts|131
+functions|0
+triggers|0
+events|0
+alerts|0
+acknowledges|0
+auditlog|0
+sessions|0
+root@credgenics-zabbix-proxy:~# ls -lah /var/lib/sqlite/
+total 38G
+drwxr-x---  2 zabbix zabbix   44 May 23 13:11 .
+drwxr-xr-x 35 root   root   4.0K Feb 21 18:11 ..
+-rw-r--r--  1 zabbix zabbix  38G May 23 13:11 zabbix.db
+-rw-r--r--  1 zabbix zabbix    0 May 21 21:05 zabbix.db.bak
+root@credgenics-zabbix-proxy:~# # Check what types of items are consuming space
+sqlite3 /var/lib/sqlite/zabbix.db << 'EOF'
+.headers on
+.mode column
+SELECT type, COUNT(*) as count
+FROM items
+GROUP BY type
+ORDER BY count DESC;
+EOF
+type  count
+----  ------
+0     382326
+18    1378
+3     342
+20    281
+5     131
+7     1
+root@credgenics-zabbix-proxy:~# # Check items by host
+sqlite3 /var/lib/sqlite/zabbix.db << 'EOF'
+.headers on
+.mode column
+SELECT h.host, COUNT(i.itemid) as item_count
+FROM hosts h
+LEFT JOIN items i ON h.hostid = i.hostid
+GROUP BY h.hostid, h.host
+ORDER BY item_count DESC
+LIMIT 20;
+EOF
+host                                             item_count
+-----------------------------------------------  ----------
+Credgenics-DC-k8s-worker-12-Linux-192.168.16.21  57838
+Credgenics-DC-k8s-worker-13-Linux-192.168.16.22  55188
+Credgenics-DC-k8s-worker-10-Linux-192.168.16.19  52336
+Credgenics-DC-k8s-worker-14-Linux-192.168.16.23  52101
+Credgenics-DC-k8s-worker-11-Linux-192.168.16.20  50117
+Credgenics-DC-k8s-worker-21-Linux-192.168.16.36  20044
+Credgenics-DC-k8s-worker-23-Linux-192.168.16.38  18640
+Credgenics-DC-k8s-worker-24-Linux-192.168.16.39  18127
+Credgenics-DC-k8s-worker-20-Linux-192.168.16.35  18100
+Credgenics-DC-k8s-worker-22-Linux-192.168.16.37  17425
+Credgenics-DC-k8s-worker-43-Linux-192.168.16.58  3225
+Credgenics-DC-k8s-worker-50-Linux-192.168.16.65  1897
+Credgenics-DC-k8s-worker-07-Linux-192.168.16.16  1222
+Credgenics-DC-k8s-worker-18-Linux-192.168.16.27  840
+Credgenics-DC-k8s-worker-16-Linux-192.168.16.25  786
+Credgenics-DC-k8s-worker-15-Linux-192.168.16.24  768
+Credgenics-DC-k8s-worker-17-Linux-192.168.16.26  759
+Credgenics-DC-k8s-worker-19-Linux-192.168.16.34  741
+Credgenics-DC-k8s-worker-31-Linux-192.168.16.46  597
+Credgenics-DC-k8s-worker-30-Linux-192.168.16.45  498
+root@credgenics-zabbix-proxy:~#
+root@credgenics-zabbix-proxy:~#
+root@credgenics-zabbix-proxy:~#

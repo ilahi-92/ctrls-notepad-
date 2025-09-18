@@ -1,0 +1,508 @@
+mysql> use kfinzabbix;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> SHOW PROCESSLIST;
++----------+----------+---------------------+------------+---------+-------+----------------------------+------------------------------------------------------------------------------------------------------+
+| Id       | User     | Host                | db         | Command | Time  | State                      | Info                                                                                                 |
++----------+----------+---------------------+------------+---------+-------+----------------------------+------------------------------------------------------------------------------------------------------+
+|  8792396 | kfinuser | localhost           | kfinzabbix | Query   |     0 | waiting for handler commit | commit                                                                                               |
+|  8792397 | kfinuser | localhost           | kfinzabbix | Sleep   |     1 |                            | NULL                                                                                                 |
+|  8792398 | kfinuser | localhost           | kfinzabbix | Sleep   |    37 |                            | NULL                                                                                                 |
+|  8792414 | kfinuser | localhost           | kfinzabbix | Sleep   |     1 |                            | NULL                                                                                                 |
+|  8792415 | kfinuser | localhost           | kfinzabbix | Sleep   |    57 |                            | NULL                                                                                                 |
+|  8792439 | kfinuser | localhost           | kfinzabbix | Sleep   |     2 |                            | NULL                                                                                                 |
+|  8792440 | kfinuser | localhost           | kfinzabbix | Sleep   |     1 |                            | NULL                                                                                                 |
+|  8792441 | kfinuser | localhost           | kfinzabbix | Sleep   |     2 |                            | NULL                                                                                                 |
+|  8792442 | kfinuser | localhost           | kfinzabbix | Sleep   |     3 |                            | NULL                                                                                                 |
+|  8792443 | kfinuser | localhost           | kfinzabbix | Sleep   |     0 |                            | NULL                                                                                                 |
+|  8792444 | kfinuser | localhost           | kfinzabbix | Sleep   |     2 |                            | NULL                                                                                                 |
+|  8792445 | kfinuser | localhost           | kfinzabbix | Sleep   |     2 |                            | NULL                                                                                                 |
+|  8792446 | kfinuser | localhost           | kfinzabbix | Sleep   |     1 |                            | NULL                                                                                                 |
+|  8792447 | kfinuser | localhost           | kfinzabbix | Sleep   |     2 |                            | NULL                                                                                                 |
+|  8792448 | kfinuser | localhost           | kfinzabbix | Sleep   |     2 |                            | NULL                                                                                                 |
+|  8792449 | kfinuser | localhost           | kfinzabbix | Sleep   |     0 |                            | NULL                                                                                                 |
+|  8792450 | kfinuser | localhost           | kfinzabbix | Sleep   |     1 |                            | NULL                                                                                                 |
+|  8792452 | kfinuser | localhost           | kfinzabbix | Sleep   |    59 |                            | NULL                                                                                                 |
+|  8792453 | kfinuser | localhost           | kfinzabbix | Sleep   |    59 |                            | NULL                                                                                                 |
+|  8792454 | kfinuser | localhost           | kfinzabbix | Query   |     0 | waiting for handler commit | commit                                                                                               |
+|  8792455 | kfinuser | localhost           | kfinzabbix | Query   |     0 | waiting for handler commit | commit                                                                                               |
+|  8792456 | kfinuser | localhost           | kfinzabbix | Query   |     0 | waiting for handler commit | commit                                                                                               |
+|  8792457 | kfinuser | localhost           | kfinzabbix | Sleep   |     0 |                            | NULL                                                                                                 |
+|  8792459 | kfinuser | localhost           | kfinzabbix | Sleep   |     1 |                            | NULL                                                                                                 |
+|  8792461 | kfinuser | localhost           | kfinzabbix | Sleep   |     2 |                            | NULL                                                                                                 |
+|  8792462 | kfinuser | localhost           | kfinzabbix | Sleep   |    58 |                            | NULL                                                                                                 |
+|  8792463 | kfinuser | localhost           | kfinzabbix | Sleep   |     0 |                            | NULL                                                                                                 |
+|  8792464 | kfinuser | localhost           | kfinzabbix | Sleep   |     1 |                            | NULL                                                                                                 |
+|  8792465 | kfinuser | localhost           | kfinzabbix | Sleep   |     0 |                            | NULL                                                                                                 |
+|  8792466 | kfinuser | localhost           | kfinzabbix | Sleep   |    58 |                            | NULL                                                                                                 |
+|  8792467 | kfinuser | localhost           | kfinzabbix | Sleep   |    58 |                            | NULL                                                                                                 |
+|  8792469 | kfinuser | localhost           | kfinzabbix | Sleep   |     1 |                            | NULL                                                                                                 |
+|  8792470 | kfinuser | localhost           | kfinzabbix | Sleep   |     0 |                            | NULL                                                                                                 |
+|  8792472 | kfinuser | localhost           | kfinzabbix | Sleep   | 17378 |                            | NULL                                                                                                 |
+|  8792477 | kfinuser | localhost           | kfinzabbix | Sleep   |    69 |                            | NULL                                                                                                 |
+|  8792492 | kfinuser | localhost           | kfinzabbix | Sleep   |     4 |                            | NULL                                                                                                 |
+|  8792494 | kfinuser | localhost           | kfinzabbix | Sleep   |    42 |                            | NULL                                                                                                 |
+|  9484644 | kfinuser | localhost           | kfinzabbix | Sleep   |   380 |                            | NULL                                                                                                 |
+|  9488424 | kfinuser | localhost           | kfinzabbix | Sleep   |     6 |                            | NULL                                                                                                 |
+|  9491913 | kfinuser | localhost           | kfinzabbix | Sleep   |   742 |                            | NULL                                                                                                 |
+|  9495313 | kfinuser | localhost           | kfinzabbix | Sleep   |   790 |                            | NULL                                                                                                 |
+|  9498806 | kfinuser | localhost           | kfinzabbix | Sleep   |    70 |                            | NULL                                                                                                 |
+|  9502930 | kfinuser | localhost           | kfinzabbix | Sleep   |     3 |                            | NULL                                                                                                 |
+|  9513209 | kfinuser | localhost           | kfinzabbix | Sleep   |   971 |                            | NULL                                                                                                 |
+|  9707884 | kfinuser | localhost           | kfinzabbix | Sleep   |  6776 |                            | NULL                                                                                                 |
+|  9707885 | kfinuser | localhost           | kfinzabbix | Sleep   |  6776 |                            | NULL                                                                                                 |
+|  9707886 | kfinuser | localhost           | kfinzabbix | Sleep   |  6776 |                            | NULL                                                                                                 |
+|  9707887 | kfinuser | localhost           | kfinzabbix | Sleep   |  6776 |                            | NULL                                                                                                 |
+|  9707888 | kfinuser | localhost           | kfinzabbix | Sleep   |  6776 |                            | NULL                                                                                                 |
+|  9707889 | kfinuser | localhost           | kfinzabbix | Sleep   |  6776 |                            | NULL                                                                                                 |
+|  9707890 | kfinuser | localhost           | kfinzabbix | Sleep   |  6776 |                            | NULL                                                                                                 |
+|  9707891 | kfinuser | localhost           | kfinzabbix | Sleep   |  6776 |                            | NULL                                                                                                 |
+|  9707892 | kfinuser | localhost           | kfinzabbix | Sleep   |  6776 |                            | NULL                                                                                                 |
+|  9707893 | kfinuser | localhost           | kfinzabbix | Sleep   |  6776 |                            | NULL                                                                                                 |
+|  9707894 | kfinuser | localhost           | kfinzabbix | Sleep   |  6776 |                            | NULL                                                                                                 |
+|  9707895 | kfinuser | localhost           | kfinzabbix | Sleep   |  6776 |                            | NULL                                                                                                 |
+|  9707896 | kfinuser | localhost           | kfinzabbix | Sleep   |  6776 |                            | NULL                                                                                                 |
+|  9707897 | kfinuser | localhost           | kfinzabbix | Sleep   |  6776 |                            | NULL                                                                                                 |
+|  9707898 | kfinuser | localhost           | kfinzabbix | Sleep   |  6776 |                            | NULL                                                                                                 |
+|  9707899 | kfinuser | localhost           | kfinzabbix | Sleep   |  6776 |                            | NULL                                                                                                 |
+|  9707900 | kfinuser | localhost           | kfinzabbix | Sleep   |  6776 |                            | NULL                                                                                                 |
+|  9707901 | kfinuser | localhost           | kfinzabbix | Sleep   |  6776 |                            | NULL                                                                                                 |
+|  9707902 | kfinuser | localhost           | kfinzabbix | Sleep   |  6776 |                            | NULL                                                                                                 |
+|  9707903 | kfinuser | localhost           | kfinzabbix | Sleep   |  6776 |                            | NULL                                                                                                 |
+|  9707906 | kfinuser | localhost           | kfinzabbix | Sleep   |  6776 |                            | NULL                                                                                                 |
+|  9707907 | kfinuser | localhost           | kfinzabbix | Sleep   |  6776 |                            | NULL                                                                                                 |
+|  9707908 | kfinuser | localhost           | kfinzabbix | Sleep   |  6776 |                            | NULL                                                                                                 |
+|  9707909 | kfinuser | localhost           | kfinzabbix | Sleep   |  6776 |                            | NULL                                                                                                 |
+|  9731901 | kfinuser | 202.65.137.24:37114 | kfinzabbix | Sleep   | 28725 |                            | NULL                                                                                                 |
+|  9738992 | kfinuser | 202.65.137.24:50198 | kfinzabbix | Sleep   | 28592 |                            | NULL                                                                                                 |
+|  9746263 | kfinuser | 202.65.137.24:41820 | kfinzabbix | Sleep   | 28484 |                            | NULL                                                                                                 |
+|  9755307 | kfinuser | 202.65.137.24:44050 | kfinzabbix | Sleep   | 28363 |                            | NULL                                                                                                 |
+|  9765310 | kfinuser | 202.65.137.24:57568 | kfinzabbix | Sleep   | 28236 |                            | NULL                                                                                                 |
+|  9775187 | kfinuser | 202.65.137.24:51494 | kfinzabbix | Sleep   | 28115 |                            | NULL                                                                                                 |
+|  9785798 | kfinuser | 202.65.137.24:47728 | kfinzabbix | Sleep   | 27997 |                            | NULL                                                                                                 |
+|  9796971 | kfinuser | 202.65.137.24:38170 | kfinzabbix | Sleep   | 27880 |                            | NULL                                                                                                 |
+|  9808812 | kfinuser | 202.65.137.24:34836 | kfinzabbix | Sleep   | 27755 |                            | NULL                                                                                                 |
+|  9820365 | kfinuser | 202.65.137.24:55986 | kfinzabbix | Sleep   | 27626 |                            | NULL                                                                                                 |
+|  9832731 | kfinuser | 202.65.137.24:40588 | kfinzabbix | Sleep   | 27509 |                            | NULL                                                                                                 |
+|  9844861 | kfinuser | 202.65.137.24:42754 | kfinzabbix | Sleep   | 27388 |                            | NULL                                                                                                 |
+|  9857780 | kfinuser | 202.65.137.24:35138 | kfinzabbix | Sleep   | 27272 |                            | NULL                                                                                                 |
+|  9871031 | kfinuser | 202.65.137.24:37120 | kfinzabbix | Sleep   | 27147 |                            | NULL                                                                                                 |
+|  9884714 | kfinuser | 202.65.137.24:48672 | kfinzabbix | Sleep   | 27023 |                            | NULL                                                                                                 |
+|  9898157 | kfinuser | 202.65.137.24:45526 | kfinzabbix | Sleep   | 26904 |                            | NULL                                                                                                 |
+|  9912083 | kfinuser | 202.65.137.24:53640 | kfinzabbix | Sleep   | 26781 |                            | NULL                                                                                                 |
+|  9925558 | kfinuser | 202.65.137.24:53316 | kfinzabbix | Sleep   | 26666 |                            | NULL                                                                                                 |
+|  9939040 | kfinuser | 202.65.137.24:44870 | kfinzabbix | Sleep   | 26538 |                            | NULL                                                                                                 |
+|  9953121 | kfinuser | 202.65.137.24:59458 | kfinzabbix | Sleep   | 26409 |                            | NULL                                                                                                 |
+|  9966935 | kfinuser | 202.65.137.24:60436 | kfinzabbix | Sleep   | 26287 |                            | NULL                                                                                                 |
+|  9979765 | kfinuser | 202.65.137.24:42506 | kfinzabbix | Sleep   | 26178 |                            | NULL                                                                                                 |
+|  9993669 | kfinuser | 202.65.137.24:50158 | kfinzabbix | Sleep   | 26058 |                            | NULL                                                                                                 |
+| 10008119 | kfinuser | 202.65.137.24:57964 | kfinzabbix | Sleep   | 25940 |                            | NULL                                                                                                 |
+| 10021994 | kfinuser | 202.65.137.24:43344 | kfinzabbix | Sleep   | 25804 |                            | NULL                                                                                                 |
+| 10035944 | kfinuser | 202.65.137.24:49342 | kfinzabbix | Sleep   | 25688 |                            | NULL                                                                                                 |
+| 10049463 | kfinuser | 202.65.137.24:50988 | kfinzabbix | Sleep   | 25568 |                            | NULL                                                                                                 |
+| 10063794 | kfinuser | 202.65.137.24:37032 | kfinzabbix | Sleep   | 25452 |                            | NULL                                                                                                 |
+| 10078614 | kfinuser | 202.65.137.24:37910 | kfinzabbix | Sleep   | 25315 |                            | NULL                                                                                                 |
+| 10093764 | kfinuser | 202.65.137.24:50790 | kfinzabbix | Sleep   | 25121 |                            | NULL                                                                                                 |
+| 10102705 | kfinuser | localhost           | kfinzabbix | Query   |     0 | waiting for handler commit | commit                                                                                               |
+| 10108025 | kfinuser | 202.65.137.24:57058 | kfinzabbix | Sleep   | 25072 |                            | NULL                                                                                                 |
+| 10120561 | kfinuser | 202.65.137.24:42662 | kfinzabbix | Sleep   | 24906 |                            | NULL                                                                                                 |
+| 10134058 | kfinuser | 202.65.137.24:56928 | kfinzabbix | Sleep   | 24793 |                            | NULL                                                                                                 |
+| 10146569 | kfinuser | 202.65.137.24:53402 | kfinzabbix | Sleep   | 24622 |                            | NULL                                                                                                 |
+| 10159257 | kfinuser | 202.65.137.24:43578 | kfinzabbix | Sleep   | 24516 |                            | NULL                                                                                                 |
+| 10171195 | kfinuser | 202.65.137.24:33958 | kfinzabbix | Sleep   | 24347 |                            | NULL                                                                                                 |
+| 10184031 | kfinuser | 202.65.137.24:48634 | kfinzabbix | Sleep   | 24229 |                            | NULL                                                                                                 |
+| 10196688 | kfinuser | 202.65.137.24:56874 | kfinzabbix | Sleep   | 23982 |                            | NULL                                                                                                 |
+| 10208670 | kfinuser | 202.65.137.24:53220 | kfinzabbix | Sleep   | 23783 |                            | NULL                                                                                                 |
+| 10220311 | kfinuser | 202.65.137.24:53670 | kfinzabbix | Sleep   | 23564 |                            | NULL                                                                                                 |
+| 10559908 | kfinuser | 202.65.137.24:48844 | kfinzabbix | Sleep   |  4757 |                            | NULL                                                                                                 |
+| 10560059 | kfinuser | 202.65.137.24:52288 | kfinzabbix | Sleep   |  4782 |                            | NULL                                                                                                 |
+| 10560379 | kfinuser | 202.65.137.24:43248 | kfinzabbix | Sleep   |  4791 |                            | NULL                                                                                                 |
+| 10560778 | kfinuser | 202.65.137.24:43224 | kfinzabbix | Sleep   |  4781 |                            | NULL                                                                                                 |
+| 10561215 | kfinuser | 202.65.137.24:37658 | kfinzabbix | Sleep   |  4765 |                            | NULL                                                                                                 |
+| 10561517 | kfinuser | 202.65.137.24:56342 | kfinzabbix | Sleep   |  4790 |                            | NULL                                                                                                 |
+| 10564546 | kfinuser | 202.65.137.24:38280 | kfinzabbix | Sleep   |  4758 |                            | NULL                                                                                                 |
+| 10573070 | kfinuser | 202.65.137.24:38448 | kfinzabbix | Sleep   |  4723 |                            | NULL                                                                                                 |
+| 10573227 | kfinuser | 202.65.137.24:38456 | kfinzabbix | Sleep   |  4717 |                            | NULL                                                                                                 |
+| 10573598 | kfinuser | 202.65.137.24:34692 | kfinzabbix | Sleep   |  4723 |                            | NULL                                                                                                 |
+| 10573970 | kfinuser | 202.65.137.24:33748 | kfinzabbix | Sleep   |  4716 |                            | NULL                                                                                                 |
+| 10576618 | kfinuser | 202.65.137.24:53450 | kfinzabbix | Sleep   |  4708 |                            | NULL                                                                                                 |
+| 10583001 | kfinuser | 202.65.137.24:53622 | kfinzabbix | Sleep   |  3242 |                            | NULL                                                                                                 |
+| 10583363 | kfinuser | 202.65.137.24:36328 | kfinzabbix | Sleep   |  3230 |                            | NULL                                                                                                 |
+| 10583807 | kfinuser | 202.65.137.24:36334 | kfinzabbix | Sleep   |  3228 |                            | NULL                                                                                                 |
+| 10584093 | kfinuser | 202.65.137.24:36432 | kfinzabbix | Sleep   |  3194 |                            | NULL                                                                                                 |
+| 10584444 | kfinuser | 202.65.137.24:58964 | kfinzabbix | Sleep   |  3226 |                            | NULL                                                                                                 |
+| 10585470 | kfinuser | 202.65.137.24:53310 | kfinzabbix | Sleep   |  3214 |                            | NULL                                                                                                 |
+| 10590864 | kfinuser | 202.65.137.24:53550 | kfinzabbix | Sleep   |  3120 |                            | NULL                                                                                                 |
+| 10594371 | kfinuser | 202.65.137.24:46310 | kfinzabbix | Sleep   |  2314 |                            | NULL                                                                                                 |
+| 10594491 | kfinuser | 202.65.137.24:46312 | kfinzabbix | Sleep   |  2336 |                            | NULL                                                                                                 |
+| 10594812 | kfinuser | 202.65.137.24:52840 | kfinzabbix | Sleep   |  2333 |                            | NULL                                                                                                 |
+| 10595272 | kfinuser | 202.65.137.24:52848 | kfinzabbix | Sleep   |  2304 |                            | NULL                                                                                                 |
+| 10595646 | kfinuser | 202.65.137.24:41538 | kfinzabbix | Sleep   |  2324 |                            | NULL                                                                                                 |
+| 10596512 | kfinuser | 202.65.137.24:52634 | kfinzabbix | Sleep   |  2279 |                            | NULL                                                                                                 |
+| 10602986 | kfinuser | 202.65.137.24:44092 | kfinzabbix | Sleep   |  1447 |                            | NULL                                                                                                 |
+| 10603156 | kfinuser | 202.65.137.24:55660 | kfinzabbix | Sleep   |  1438 |                            | NULL                                                                                                 |
+| 10603558 | kfinuser | 202.65.137.24:47066 | kfinzabbix | Sleep   |  1445 |                            | NULL                                                                                                 |
+| 10603895 | kfinuser | 202.65.137.24:58416 | kfinzabbix | Sleep   |  1459 |                            | NULL                                                                                                 |
+| 10604294 | kfinuser | 202.65.137.24:48486 | kfinzabbix | Sleep   |  1412 |                            | NULL                                                                                                 |
+| 10604886 | kfinuser | 202.65.137.24:45248 | kfinzabbix | Sleep   |  1428 |                            | NULL                                                                                                 |
+| 10605712 | kfinuser | 202.65.137.24:45590 | kfinzabbix | Sleep   |  1419 |                            | NULL                                                                                                 |
+| 10612319 | kfinuser | 202.65.137.24:55486 | kfinzabbix | Sleep   |   548 |                            | NULL                                                                                                 |
+| 10612713 | kfinuser | 202.65.137.24:50640 | kfinzabbix | Sleep   |   535 |                            | NULL                                                                                                 |
+| 10613155 | kfinuser | 202.65.137.24:43792 | kfinzabbix | Sleep   |   597 |                            | NULL                                                                                                 |
+| 10613573 | kfinuser | 202.65.137.24:47368 | kfinzabbix | Sleep   |   542 |                            | NULL                                                                                                 |
+| 10613995 | kfinuser | 202.65.137.24:32898 | kfinzabbix | Sleep   |   602 |                            | NULL                                                                                                 |
+| 10614603 | kfinuser | 202.65.137.24:54132 | kfinzabbix | Sleep   |   618 |                            | NULL                                                                                                 |
+| 10615158 | kfinuser | 202.65.137.24:37036 | kfinzabbix | Sleep   |   576 |                            | NULL                                                                                                 |
+| 10620701 | kfinuser | 202.65.137.24:57106 | kfinzabbix | Sleep   |   693 |                            | NULL                                                                                                 |
+| 10622216 | kfinuser | 202.65.137.24:42898 | kfinzabbix | Sleep   |   694 |                            | NULL                                                                                                 |
+| 10622768 | kfinuser | 202.65.137.24:59598 | kfinzabbix | Sleep   |   670 |                            | NULL                                                                                                 |
+| 10623108 | kfinuser | 202.65.137.24:59366 | kfinzabbix | Sleep   |   668 |                            | NULL                                                                                                 |
+| 10623803 | kfinuser | 202.65.137.24:37230 | kfinzabbix | Sleep   |   633 |                            | NULL                                                                                                 |
+| 10624284 | kfinuser | 202.65.137.24:42482 | kfinzabbix | Sleep   |   641 |                            | NULL                                                                                                 |
+| 10625000 | kfinuser | 202.65.137.24:57366 | kfinzabbix | Sleep   |   616 |                            | NULL                                                                                                 |
+| 10629353 | kfinuser | 202.65.137.24:47442 | kfinzabbix | Sleep   |   559 |                            | NULL                                                                                                 |
+| 10632797 | kfinuser | localhost           | kfinzabbix | Query   |     0 | init                       | SHOW PROCESSLIST                                                                                     |
+| 10632802 | kfinuser | localhost           | kfinzabbix | Query   |    10 | executing                  | SELECT DISTINCT p.eventid,p.r_eventid,p.objectid,p.clock,p.ns,p.name,p.acknowledged,p.severity FROM  |
+| 10632804 | kfinuser | localhost           | kfinzabbix | Query   |     2 | executing                  | SELECT t.triggerid,t.priority,t.manual_close FROM triggers t WHERE (t.triggerid IN (13473,13479,2239 |
+| 10632809 | kfinuser | localhost           | kfinzabbix | Query   |     7 | executing                  | SELECT p.eventid,p.objectid,p.clock,p.ns,p.name,p.severity FROM problem p WHERE p.source='0' AND p.o |
+| 10632810 | kfinuser | localhost           | kfinzabbix | Query   |     1 | executing                  | SELECT t.triggerid,t.priority,t.manual_close FROM triggers t WHERE (t.triggerid IN (13473,13479,2239 |
+| 10632822 | kfinuser | localhost           | kfinzabbix | Query   |     3 | executing                  | SELECT p.eventid,p.objectid,p.clock,p.ns,p.name,p.severity FROM problem p WHERE p.source='0' AND p.o |
+| 10632824 | kfinuser | localhost           | kfinzabbix | Query   |     1 | executing                  | SELECT DISTINCT p.eventid,p.r_eventid,p.objectid,p.clock,p.ns,p.name,p.acknowledged,p.severity FROM  |
++----------+----------+---------------------+------------+---------+-------+----------------------------+------------------------------------------------------------------------------------------------------+
+163 rows in set (0.00 sec)
+
+mysql>
+mysql> SHOW GLOBAL STATUS LIKE 'Threads%';
++-------------------+-------+
+| Variable_name     | Value |
++-------------------+-------+
+| Threads_cached    | 8     |
+| Threads_connected | 163   |
+| Threads_created   | 98530 |
+| Threads_running   | 11    |
++-------------------+-------+
+4 rows in set (0.08 sec)
+
+mysql> SHOW GLOBAL STATUS LIKE 'Connections';
++---------------+----------+
+| Variable_name | Value    |
++---------------+----------+
+| Connections   | 10632844 |
++---------------+----------+
+1 row in set (0.00 sec)
+
+mysql> SHOW GLOBAL STATUS LIKE 'Queries';
++---------------+-----------+
+| Variable_name | Value     |
++---------------+-----------+
+| Queries       | 911264074 |
++---------------+-----------+
+1 row in set (0.00 sec)
+
+mysql> SHOW GLOBAL STATUS LIKE 'Slow_queries';
++---------------+-------+
+| Variable_name | Value |
++---------------+-------+
+| Slow_queries  | 11097 |
++---------------+-------+
+1 row in set (0.01 sec)
+
+mysql>
+mysql> SHOW VARIABLES LIKE 'max_connections';
++-----------------+-------+
+| Variable_name   | Value |
++-----------------+-------+
+| max_connections | 500   |
++-----------------+-------+
+1 row in set (0.00 sec)
+
+mysql> SHOW VARIABLES LIKE 'innodb_buffer_pool_size';
++-------------------------+-------------+
+| Variable_name           | Value       |
++-------------------------+-------------+
+| innodb_buffer_pool_size | 34359738368 |
++-------------------------+-------------+
+1 row in set (0.01 sec)
+
+mysql> SHOW VARIABLES LIKE 'query_cache%';
+Empty set (0.00 sec)
+
+mysql>
+mysql> SELECT table_schema, ROUND(SUM(data_length + index_length) / 1024 / 1024 / 1024, 2) AS "Size (GB)"
+    -> FROM information_schema.tables
+    -> GROUP BY table_schema
+    -> ORDER BY SUM(data_length + index_length) DESC;
+
+^C^C -- query aborted
+ERROR 1317 (70100): Query execution was interrupted
+mysql> SELECT table_schema, ROUND(SUM(data_length + index_length) / 1024 / 1024 / 1024, 2) AS "Size (GB)"
+    -> FROM information_schema.tables
+    -> GROUP BY table_schema
+    -> ORDER BY SUM(data_length + index_length) DESC;
++--------------------+-----------+
+| TABLE_SCHEMA       | Size (GB) |
++--------------------+-----------+
+| kfinzabbix         |    884.86 |
+| information_schema |      0.00 |
+| performance_schema |      0.00 |
++--------------------+-----------+
+3 rows in set (0.16 sec)
+
+mysql>
+mysql> USE kfinzabbix;
+Database changed
+mysql> SELECT table_name, ROUND(data_length/1024/1024,2) AS data_mb,
+    ->        ROUND(index_length/1024/1024,2) AS index_mb,
+    ->        ROUND((data_length+index_length)/1024/1024,2) AS total_mb
+    -> FROM information_schema.tables
+    -> WHERE table_schema='zabbix'
+    -> ORDER BY (data_length+index_length) DESC
+    -> LIMIT 10;
+Empty set (0.00 sec)
+
+mysql> -- Generate KILL statements for connections idle for more than 1 hour
+mysql> SELECT CONCAT('KILL ', id, ';') FROM information_schema.processlist
+    -> WHERE command = 'Sleep' AND time > 3600;
++--------------------------+
+| CONCAT('KILL ', id, ';') |
++--------------------------+
+| KILL 9707896;            |
+| KILL 10035944;           |
+| KILL 9738992;            |
+| KILL 9939040;            |
+| KILL 8792472;            |
+| KILL 9707888;            |
+| KILL 10196688;           |
+| KILL 9953121;            |
+| KILL 10146569;           |
+| KILL 10108025;           |
+| KILL 9707889;            |
+| KILL 9707897;            |
+| KILL 10159257;           |
+| KILL 10120561;           |
+| KILL 10560778;           |
+| KILL 9707906;            |
+| KILL 10576618;           |
+| KILL 10564546;           |
+| KILL 10573970;           |
+| KILL 9884714;            |
+| KILL 9707890;            |
+| KILL 9707898;            |
+| KILL 10063794;           |
+| KILL 10021994;           |
+| KILL 10134058;           |
+| KILL 9796971;            |
+| KILL 9707891;            |
+| KILL 9707899;            |
+| KILL 9755307;            |
+| KILL 9707907;            |
+| KILL 9832731;            |
+| KILL 9912083;            |
+| KILL 10560379;           |
+| KILL 9775187;            |
+| KILL 10171195;           |
+| KILL 10573227;           |
+| KILL 10560059;           |
+| KILL 9707900;            |
+| KILL 10093764;           |
+| KILL 9857780;            |
+| KILL 9808812;            |
+| KILL 9707884;            |
+| KILL 9707908;            |
+| KILL 10559908;           |
+| KILL 9707892;            |
+| KILL 9820365;            |
+| KILL 9707885;            |
+| KILL 9979765;            |
+| KILL 9707909;            |
+| KILL 9707893;            |
+| KILL 9844861;            |
+| KILL 9993669;            |
+| KILL 9707901;            |
+| KILL 9898157;            |
+| KILL 10561517;           |
+| KILL 9707894;            |
+| KILL 9925558;            |
+| KILL 9707902;            |
+| KILL 10208670;           |
+| KILL 9785798;            |
+| KILL 10078614;           |
+| KILL 9765310;            |
+| KILL 10573598;           |
+| KILL 9707886;            |
+| KILL 10573070;           |
+| KILL 9707903;            |
+| KILL 9707887;            |
+| KILL 10561215;           |
+| KILL 10184031;           |
+| KILL 9707895;            |
+| KILL 9746263;            |
+| KILL 9871031;            |
+| KILL 10220311;           |
+| KILL 10049463;           |
+| KILL 9966935;            |
+| KILL 10008119;           |
++--------------------------+
+76 rows in set (0.01 sec)
+
+mysql>
+mysql> SHOW GLOBAL VARIABLES LIKE 'wait_timeout';
++---------------+-------+
+| Variable_name | Value |
++---------------+-------+
+| wait_timeout  | 28800 |
++---------------+-------+
+1 row in set (0.01 sec)
+
+mysql> SHOW GLOBAL VARIABLES LIKE 'interactive_timeout';
++---------------------+-------+
+| Variable_name       | Value |
++---------------------+-------+
+| interactive_timeout | 28800 |
++---------------------+-------+
+1 row in set (0.01 sec)
+
+mysql> exit;
+Bye
+[root@kfin-dc-zabbix ~]# top
+top - 03:35:08 up 35 days, 16:31,  1 user,  load average: 45.80, 31.86, 25.01
+Tasks: 1236 total,   7 running, 1229 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 45.1 us, 12.0 sy,  0.0 ni, 35.9 id,  2.4 wa,  1.2 hi,  3.4 si,  0.0 st
+MiB Mem :  58277.6 total,   2036.4 free,  49562.4 used,   6678.8 buff/cache
+MiB Swap:  22388.0 total,  21869.4 free,    518.6 used.   4115.8 avail Mem
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+1301027 mysql     20   0   43.5g  39.8g  25080 S 320.9  69.9  16474:09 mysqld
+2216311 zabbix    20   0 5958900 753732 690940 R  10.5   1.3 260:23.22 zabbix_server
+ 846094 apache    20   0  457072  25132  12656 S   5.9   0.0   0:00.33 php-fpm
+ 836323 apache    20   0  458984  25624  12656 S   5.6   0.0   0:23.77 php-fpm
+2216704 zabbix    20   0 6116600 218348 210008 S   5.6   0.4   6:55.70 zabbix_server
+ 834136 apache    20   0  458984  25896  12656 S   5.2   0.0   0:29.25 php-fpm
+2216630 zabbix    20   0 6118644 220040 209976 S   5.2   0.4   6:51.61 zabbix_server
+
+
+
+innodb
+
+cd /etc/my.cnf.d
+
+vi my.cnf
+
+[root@kfin-dc-zabbix mon42039]# systemctl status mysqld
+● mysqld.service - MySQL 8.0 database server
+   Loaded: loaded (/usr/lib/systemd/system/mysqld.service; enabled; vendor preset: disabled)
+   Active: active (running) since Fri 2025-04-25 09:38:48 IST; 5h 31min ago
+ Main PID: 160168 (mysqld)
+   Status: "Server is operational"
+    Tasks: 162 (limit: 372610)
+   Memory: 50.8G
+   CGroup: /system.slice/mysqld.service
+           └─160168 /usr/libexec/mysqld --basedir=/usr
+
+Apr 25 09:38:31 kfin-dc-zabbix.ctrls.in systemd[1]: Starting MySQL 8.0 database server...
+Apr 25 09:38:48 kfin-dc-zabbix.ctrls.in systemd[1]: Started MySQL 8.0 database server.
+[root@kfin-dc-zabbix mon42039]# cd /etc/my.cnf.d/
+[root@kfin-dc-zabbix my.cnf.d]#
+[root@kfin-dc-zabbix my.cnf.d]# ls -ltrh
+total 24K
+-rw-r--r--. 1 root root  295 May 17  2021 client.cnf
+-rw-r--r--. 1 root root  565 Oct 25  2022 mysql-default-authentication-plugin.cnf
+-rw-r--r--  1 root root 1.7K Mar 11 23:41 mysql-server.cnf-rajesh
+-rw-r--r--  1 root root 2.0K Apr 25 00:29 mysql-server.cnf_bak
+-rw-r--r--  1 root root 2.0K Apr 25 09:32 mysql-server.cnf-backup
+-rw-r--r--  1 root root 1.8K Apr 25 12:30 mysql-server.cnf
+[root@kfin-dc-zabbix my.cnf.d]# cat mysql-server.cnf
+[mysqld]
+event_scheduler = ON
+
+# Paths
+datadir=/ZabbixData/mysql
+socket=/var/lib/mysql/mysql.sock
+log-error=/var/log/mysql/mysqld.log
+pid-file=/run/mysqld/mysqld.pid
+
+# Authentication
+default-authentication-plugin=mysql_native_password
+
+# Binary logging and replication (can disable if no replication)
+log-bin=/var/lib/mysql/mysql-bin.log
+server-id=1
+binlog-format=ROW
+gtid-mode=ON
+enforce-gtid-consistency
+log-slave-updates=1
+master-info-repository=TABLE
+relay-log=1-relay-bin
+expire-logs-days=5
+
+# Character Set
+character-set-server=utf8mb4
+collation-server=utf8mb4_unicode_ci
+
+# Packet & Error Handling
+max-allowed-packet = 256M
+max-connect-errors = 100000
+
+# Connection & Cache Settings
+max-connections = 500
+table_open_cache = 8192
+open_files_limit = 20000
+thread_cache_size = 128
+
+# InnoDB Settings (key area for performance)
+innodb_buffer_pool_size = 40G  # 80% of RAM
+innodb_buffer_pool_instances = 12
+innodb_log_file_size = 2G
+innodb_log_files_in_group = 2
+innodb_log_buffer_size = 512M
+innodb_flush_log_at_trx_commit = 2
+innodb_file_per_table = 1
+innodb_flush_method = O_DIRECT
+innodb_io_capacity = 4000
+innodb_io_capacity_max = 8000
+innodb_read_io_threads = 8
+innodb_write_io_threads = 8
+innodb_old_blocks_time = 1000
+
+# Temporary Tables & Sorting
+tmp-table-size = 512M
+max-heap-table-size = 512M
+sort-buffer-size = 8M
+join-buffer-size = 8M
+read-buffer-size = 2M
+read-rnd-buffer-size = 4M
+
+# Auto Increment
+auto-increment-increment = 1
+auto-increment-offset = 1
+innodb-autoinc-lock-mode = 2
+
+# Slow Query Logging (for analysis)
+slow_query_log = 1
+slow_query_log_file = /var/log/mysql/mysql-slow.log
+long_query_time = 2
+log_queries_not_using_indexes = 1
+
+# Performance Schema (if needed)
+performance_schema = ON
+
+# Thread Pooling (if using Percona or MariaDB Enterprise)
+# thread_handling = pool-of-threads
+
+[root@kfin-dc-zabbix my.cnf.d]#
+
+
+
+HA for hyderabdad
+
+DR for mumbai location
+
+1.4 
+
+2. TB 
+
+2. TB 
+
+.

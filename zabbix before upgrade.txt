@@ -1,0 +1,218 @@
+Zabbix before upgrade : 
+
+
+login as: unx40423
+Pre-authentication banner message from server:
+| ###################################### W A R N I N G ######################
+| You  are  entering  into a secured  area!  Your IP, Login  Time, Username has
+| been noted and  has been  sent to the  server  administrator! This service is
+| restricted to authorized users only. All activities on this system are logged
+| Unauthorized access will be fully investigated and reported to appropriate
+| law enforcement agencies.
+| ############################################################################
+End of banner message from server
+unx40423@10.71.55.19's password:
+Last login: Mon May  5 16:44:45 2025 from 10.41.182.165
+[unx40423@MG3AP3LV-5237 ~]$ sudo su
+[sudo] password for unx40423:
+[root@MG3AP3LV-5237 unx40423]# ping google.com
+PING google.com (142.251.42.78) 56(84) bytes of data.
+^C
+--- google.com ping statistics ---
+3 packets transmitted, 0 received, 100% packet loss, time 2077ms
+
+[root@MG3AP3LV-5237 unx40423]# systemctl status mysqld
+● mysqld.service - MySQL 8.0 database server
+   Loaded: loaded (/usr/lib/systemd/system/mysqld.service; enabled; vendor preset: disabled)
+   Active: active (running) since Sat 2025-02-22 19:30:34 IST; 2 months 11 days ago
+ Main PID: 1450346 (mysqld)
+   Status: "Server is operational"
+    Tasks: 62 (limit: 409432)
+   Memory: 9.4G
+   CGroup: /system.slice/mysqld.service
+           └─1450346 /usr/libexec/mysqld --basedir=/usr
+
+Warning: Journal has been rotated since unit was started. Log output is incomplete or unavailable.
+[root@MG3AP3LV-5237 unx40423]# systemctl status zabbix-server
+● zabbix-server.service - Zabbix Server
+   Loaded: loaded (/usr/lib/systemd/system/zabbix-server.service; enabled; vendor preset: disabled)
+   Active: active (running) since Sun 2025-02-23 11:39:59 IST; 2 months 10 days ago
+ Main PID: 1498829 (zabbix_server)
+    Tasks: 50 (limit: 409432)
+   Memory: 117.4M
+   CGroup: /system.slice/zabbix-server.service
+           ├─1498829 /usr/sbin/zabbix_server -c /etc/zabbix/zabbix_server.conf
+           ├─1498830 /usr/sbin/zabbix_server: ha manager
+           ├─1498833 /usr/sbin/zabbix_server: service manager #1 [processed 0 events, updated 0 event tags, deleted 0 problems, synced 0 service updates, idle 5.005898 sec during 5.006115 >
+           ├─1498834 /usr/sbin/zabbix_server: configuration syncer [synced configuration in 0.084913 sec, idle 10 sec]
+           ├─1498838 /usr/sbin/zabbix_server: alert manager #1 [sent 0, failed 0 alerts, idle 5.015636 sec during 5.015971 sec]
+           ├─1498839 /usr/sbin/zabbix_server: alerter #1 started
+           ├─1498840 /usr/sbin/zabbix_server: alerter #2 started
+           ├─1498841 /usr/sbin/zabbix_server: alerter #3 started
+           ├─1498842 /usr/sbin/zabbix_server: preprocessing manager #1 [queued 67, processed 67 values, idle 5.157482 sec during 5.165477 sec]
+           ├─1498843 /usr/sbin/zabbix_server: lld manager #1 [processed 0 LLD rules, idle 5.005425sec during 5.005637 sec]
+           ├─1498844 /usr/sbin/zabbix_server: lld worker #1 [processed 2 LLD rules, idle 6.141247 sec during 6.218496 sec]
+           ├─1498845 /usr/sbin/zabbix_server: lld worker #2 [processed 1 LLD rules, idle 14.272350 sec during 14.321736 sec]
+           ├─1498846 /usr/sbin/zabbix_server: housekeeper [deleted 20445 hist/trends, 0 items/triggers, 0 events, 0 sessions, 0 alarms, 0 audit items, 0 autoreg_host, 0 records in 7.097794>
+           ├─1498847 /usr/sbin/zabbix_server: timer #1 [updated 0 hosts, suppressed 0 events in 0.003048 sec, idle 59 sec]
+           ├─1498849 /usr/sbin/zabbix_server: http poller #1 [got 0 values in 0.000061 sec, idle 5 sec]
+           ├─1498852 /usr/sbin/zabbix_server: discoverer #1 [processed 0 rules in 0.000061 sec, idle 60 sec]
+           ├─1498854 /usr/sbin/zabbix_server: history syncer #1 [processed 0 values, 0 triggers in 0.000045 sec, idle 1 sec]
+           ├─1498855 /usr/sbin/zabbix_server: history syncer #2 [processed 16 values, 14 triggers in 0.016158 sec, idle 1 sec]
+           ├─1498858 /usr/sbin/zabbix_server: history syncer #3 [processed 0 values, 5 triggers in 0.001347 sec, idle 1 sec]
+           ├─1498860 /usr/sbin/zabbix_server: history syncer #4 [processed 26 values, 24 triggers in 0.029943 sec, idle 1 sec]
+           ├─1498862 /usr/sbin/zabbix_server: escalator #1 [processed 0 escalations in 0.004709 sec, idle 3 sec]
+           ├─1498865 /usr/sbin/zabbix_server: proxy poller #1 [exchanged data with 0 proxies in 0.000060 sec, idle 5 sec]
+           ├─1498866 /usr/sbin/zabbix_server: self-monitoring [processed data in 0.000057 sec, idle 1 sec]
+           ├─1498867 /usr/sbin/zabbix_server: task manager [processed 0 task(s) in 0.001014 sec, idle 5 sec]
+           ├─1498868 /usr/sbin/zabbix_server: poller #1 [got 9 values in 0.028608 sec, idle 1 sec]
+           ├─1498871 /usr/sbin/zabbix_server: poller #2 [got 7 values in 0.029429 sec, idle 1 sec]
+           ├─1498873 /usr/sbin/zabbix_server: poller #3 [got 10 values in 0.027391 sec, idle 1 sec]
+           ├─1498874 /usr/sbin/zabbix_server: poller #4 [got 9 values in 0.031698 sec, idle 1 sec]
+           ├─1498875 /usr/sbin/zabbix_server: poller #5 [got 7 values in 0.029286 sec, idle 1 sec]
+           ├─1498876 /usr/sbin/zabbix_server: unreachable poller #1 [got 0 values in 0.000064 sec, idle 5 sec]
+           ├─1498877 /usr/sbin/zabbix_server: trapper #1 [processed data in 0.001786 sec, waiting for connection]
+           ├─1498878 /usr/sbin/zabbix_server: trapper #2 [processed data in 0.008269 sec, waiting for connection]
+           ├─1498879 /usr/sbin/zabbix_server: trapper #3 [processed data in 0.006971 sec, waiting for connection]
+           ├─1498880 /usr/sbin/zabbix_server: trapper #4 [processed data in 0.007499 sec, waiting for connection]
+           ├─1498882 /usr/sbin/zabbix_server: trapper #5 [processed data in 0.005429 sec, waiting for connection]
+           ├─1498884 /usr/sbin/zabbix_server: icmp pinger #1 [pinging hosts]
+           ├─1498886 /usr/sbin/zabbix_server: alert syncer [queued 0 alerts(s), flushed 0 result(s) in 0.002907 sec, idle 1 sec]
+           ├─1498888 /usr/sbin/zabbix_server: history poller #1 [got 0 values in 0.000062 sec, idle 3 sec]
+           ├─1498891 /usr/sbin/zabbix_server: history poller #2 [got 0 values in 0.000064 sec, idle 3 sec]
+           ├─1498892 /usr/sbin/zabbix_server: history poller #3 [got 1 values in 0.000238 sec, idle 3 sec]
+           ├─1498893 /usr/sbin/zabbix_server: history poller #4 [got 0 values in 0.000064 sec, idle 3 sec]
+
+[root@MG3AP3LV-5237 unx40423]# systemctl status httpd
+● httpd.service - The Apache HTTP Server
+   Loaded: loaded (/usr/lib/systemd/system/httpd.service; enabled; vendor preset: disabled)
+  Drop-In: /usr/lib/systemd/system/httpd.service.d
+           └─php-fpm.conf
+   Active: active (running) since Sun 2025-02-23 11:45:02 IST; 2 months 10 days ago
+     Docs: man:httpd.service(8)
+ Main PID: 1499154 (httpd)
+   Status: "Total requests: 16914; Idle/Busy workers 100/0;Requests/sec: 0.00275; Bytes served/sec:  65 B/sec"
+    Tasks: 278 (limit: 409432)
+   Memory: 61.9M
+   CGroup: /system.slice/httpd.service
+           ├─1499154 /usr/sbin/httpd -DFOREGROUND
+           ├─2611894 /usr/sbin/httpd -DFOREGROUND
+           ├─2611895 /usr/sbin/httpd -DFOREGROUND
+           ├─2611896 /usr/sbin/httpd -DFOREGROUND
+           ├─2611897 /usr/sbin/httpd -DFOREGROUND
+           └─2843026 /usr/sbin/httpd -DFOREGROUND
+
+Apr 27 03:29:01 MG3AP3LV-5237 systemd[1]: Reloaded The Apache HTTP Server.
+Apr 27 03:29:02 MG3AP3LV-5237 httpd[1499154]: Server configured, listening on: port 80
+Apr 29 03:29:01 MG3AP3LV-5237 systemd[1]: Reloading The Apache HTTP Server.
+Apr 29 03:29:01 MG3AP3LV-5237 httpd[1806942]: AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 10.71.55.19. Set the 'ServerName' directive globa>
+Apr 29 03:29:01 MG3AP3LV-5237 systemd[1]: Reloaded The Apache HTTP Server.
+Apr 29 03:29:01 MG3AP3LV-5237 httpd[1499154]: Server configured, listening on: port 80
+May 04 03:26:01 MG3AP3LV-5237 systemd[1]: Reloading The Apache HTTP Server.
+May 04 03:26:12 MG3AP3LV-5237 httpd[2611769]: AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 10.71.55.19. Set the 'ServerName' directive globa>
+May 04 03:26:12 MG3AP3LV-5237 systemd[1]: Reloaded The Apache HTTP Server.
+May 04 03:26:22 MG3AP3LV-5237 httpd[1499154]: Server configured, listening on: port 80
+
+[root@MG3AP3LV-5237 unx40423]# systemctl status php-fpm
+● php-fpm.service - The PHP FastCGI Process Manager
+   Loaded: loaded (/usr/lib/systemd/system/php-fpm.service; enabled; vendor preset: disabled)
+   Active: active (running) since Sun 2025-02-23 11:45:02 IST; 2 months 10 days ago
+ Main PID: 1499153 (php-fpm)
+   Status: "Processes active: 0, idle: 70, Requests: 16593, slow: 0, Traffic: 0req/sec"
+    Tasks: 71 (limit: 409432)
+   Memory: 417.8M
+   CGroup: /system.slice/php-fpm.service
+           ├─1499153 php-fpm: master process (/etc/php-fpm.conf)
+           ├─1499190 php-fpm: pool www
+           ├─1499191 php-fpm: pool www
+           ├─1499197 php-fpm: pool www
+           ├─1499198 php-fpm: pool www
+           ├─1499199 php-fpm: pool www
+           ├─1499200 php-fpm: pool www
+           ├─1499201 php-fpm: pool www
+           ├─1499212 php-fpm: pool www
+           ├─1499213 php-fpm: pool www
+           ├─1499214 php-fpm: pool www
+           ├─1499215 php-fpm: pool www
+           ├─1499216 php-fpm: pool www
+           ├─1499222 php-fpm: pool www
+           ├─1499223 php-fpm: pool www
+           ├─1499224 php-fpm: pool www
+           ├─1499225 php-fpm: pool www
+           ├─1499226 php-fpm: pool www
+           ├─1499253 php-fpm: pool www
+           ├─1499254 php-fpm: pool www
+           ├─1499255 php-fpm: pool www
+           ├─1499256 php-fpm: pool www
+           ├─1499257 php-fpm: pool www
+           ├─1499263 php-fpm: pool www
+           ├─1499264 php-fpm: pool www
+           ├─1499265 php-fpm: pool www
+           ├─1499266 php-fpm: pool www
+           ├─1499267 php-fpm: pool www
+           ├─1499273 php-fpm: pool www
+           ├─1499274 php-fpm: pool www
+           ├─1499275 php-fpm: pool www
+           ├─1499276 php-fpm: pool www
+           ├─1499277 php-fpm: pool www
+           ├─1499283 php-fpm: pool www
+           ├─1499284 php-fpm: pool www
+           ├─1499285 php-fpm: pool www
+           ├─3620035 php-fpm: pool zabbix
+           ├─3620054 php-fpm: pool zabbix
+           ├─3620104 php-fpm: pool zabbix
+           ├─3620110 php-fpm: pool zabbix
+
+[root@MG3AP3LV-5237 unx40423]# cd /etc/zabbix/
+[root@MG3AP3LV-5237 zabbix]# cat zabbix_server.conf | grep DB
+### Option: DBHost
+# DBHost=localhost
+### Option: DBName
+#       the tnsnames.ora file or set to empty string; also see the TWO_TASK environment variable if DBName is set to
+# DBName=
+DBName=zabbix
+### Option: DBSchema
+# DBSchema=
+### Option: DBUser
+# DBUser=
+DBUser=zabbix
+### Option: DBPassword
+# DBPassword
+DBPassword=password
+### Option: DBSocket
+# DBSocket=
+### Option: DBPort
+# DBPort=
+### Option: AllowUnsupportedDBVersions
+# AllowUnsupportedDBVersions=0
+### Option: StartDBSyncers
+#       Number of pre-forked instances of DB Syncers.
+# StartDBSyncers=4
+### Option: DBTLSConnect
+#       verify_full - connect using TLS, verify certificate and verify that database identity specified by DBHost
+#       On MariaDB starting from version 10.2.6 "required" and "verify_full" values are supported.
+# DBTLSConnect=
+### Option: DBTLSCAFile
+#       (yes, if DBTLSConnect set to one of: verify_ca, verify_full)
+# DBTLSCAFile=
+### Option: DBTLSCertFile
+# DBTLSCertFile=
+# DBTLSCertFile=
+### Option: DBTLSKeyFile
+# DBTLSKeyFile=
+### Option: DBTLSCipher
+# DBTLSCipher=
+### Option: DBTLSCipher13
+# DBTLSCipher13=
+#       to paths specified in Vault macros and read only permission to path specified in optional VaultDBPath
+### Option: VaultDBPath
+#       This option can only be used if DBUser and DBPassword are not specified.
+# VaultDBPath=
+## Option: StartODBCPollers
+#       Number of pre-forked ODBC poller instances.
+# StartODBCPollers=1
+[root@MG3AP3LV-5237 zabbix]#
+
+
+=====================
+

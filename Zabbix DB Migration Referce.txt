@@ -1,0 +1,283 @@
+DB Base Schema
+
+docker cp zabbix-service-app:/usr/share/doc/zabbix-server-mysql/create.sql.gz /root/
+gunzip /root/create.sql.gz
+
+scp /root/create.sql root@192.168.12.65:/root/
+
+Creating DB : 
+
+mysql -u root -p
+
+
+CREATE DATABASE zabbixnew CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
+
+
+mysql -u root -p zabbixnew < /root/create.sql
+
+
+Zabbix DB user created data Export and Import
+
+================================================
+
+
+Configuration Data Check :
+
+mysql> SELECT
+    ->     COUNT(*) as template_count
+    -> FROM hosts
+    -> WHERE status = 3;
++----------------+
+| template_count |
++----------------+
+|            548 |
++----------------+
+1 row in set (0.00 sec)
+
+mysql> -- Check template relationships
+mysql> SELECT
+    ->     COUNT(*) as template_relationships
+    -> FROM hosts_templates;
++------------------------+
+| template_relationships |
++------------------------+
+|                  38357 |
++------------------------+
+1 row in set (0.04 sec)
+
+==================================================
+
+
+Exported Templates :
+
+Test: Singel Templates
+
+DB to OS
+
+Export : 
+
+# Add the password parameter
+mysqldump --single-transaction -u root -psJ4xvg4xwUp3amfe zabbix \
+  --where="host='Template SNMP Generic'" hosts \
+  > /root/one_template_test.sql
+ 
+ 
+verify the file
+  
+cat /root/one_template_test.sql | grep -i "Template SNMP Generic"
+wc -l /root/one_template_test.sql
+
+Import to new DB
+
+
+mysql -u root -psJ4xvg4xwUp3amfe zabbixnew < /root/one_template_test.sql
+
+
+GTID error :
+
+root@CS-MS-ZBX6-HYD-DB02-Primary:~# mysql -u root -psJ4xvg4xwUp3amfe zabbixnew < /root/one_template_test.sql
+mysql: [Warning] Using a password on the command line interface can be insecure.
+ERROR 3546 (HY000) at line 24: @@GLOBAL.GTID_PURGED cannot be changed: the added gtid set must not overlap with @@GLOBAL.GTID_EXECUTED
+root@CS-MS-ZBX6-HYD-DB02-Primary:~#
+
+This is a GTID (Global Transaction Identifier) conflict. Let's fix it by excluding GTID information from the dump:  (re-export)
+
+
+# Re-export without GTID information
+mysqldump --single-transaction -u root -psJ4xvg4xwUp3amfe \
+  --set-gtid-purged=OFF \
+  --where="host='Template SNMP Generic'" \
+  zabbix hosts \
+  > /root/one_template_test_fixed.sql
+  
+  
+mysql -u root -psJ4xvg4xwUp3amfe zabbixnew < /root/one_template_test_fixed.sql
+
+
+Verify import : 
+
+# Check if the template was imported successfully
+mysql -u root -psJ4xvg4xwUp3amfe -e "
+USE zabbixnew;
+SELECT host, name, status, hostid 
+FROM hosts 
+WHERE host = 'Template SNMP Generic';
+"
+
+# Check if the template was imported successfully
+mysql -u root -psJ4xvg4xwUp3amfe -e "
+USE zabbixnew;
+SELECT host, name, status, hostid 
+FROM hosts 
+WHERE host = 'Template SNMP Generic';
+"
+
+Databas reset automatically -
+
+Full Templates 
+
+
+Disable GTID for the session : export 
+
+# Add --set-gtid-purged=OFF to all mysqldump commands
+mysqldump --single-transaction -u root -psJ4xvg4xwUp3amfe \
+  --set-gtid-purged=OFF \
+  --no-tablespaces \
+  --where="status=3" \
+  zabbix hosts \
+  > /root/all_templates.sql
+  
+import fixed version : 
+
+mysql -u root -psJ4xvg4xwUp3amfe zabbixnew < /root/one_template_test_fixed.sql
+
+# Export template relationships
+mysqldump --single-transaction -u root -psJ4xvg4xwUp3amfe \
+  --set-gtid-purged=OFF \
+  --no-tablespaces \
+  zabbix hosts_templates \
+  > /root/template_relationships.sql
+  
+# Export template relationships
+mysqldump --single-transaction -u root -psJ4xvg4xwUp3amfe \
+  --set-gtid-purged=OFF \
+  --no-tablespaces \
+  zabbix hosts_templates \
+  > /root/template_relationships.sql
+  
+ Check what exported : 
+ 
+ # Check template count in the file
+grep -c "INSERT INTO" /root/all_templates.sql
+
+# Check file sizes
+ls -lh /root/all_templates.sql /root/template_relationships.sql
+
+IMPORT : 
+
+# Import all templates
+mysql -u root -psJ4xvg4xwUp3amfe zabbixnew < /root/all_templates.sql
+
+# Import template relationships  
+mysql -u root -psJ4xvg4xwUp3amfe zabbixnew < /root/template_relationships.sql
+
+VERIFY : 
+
+mysql -u root -psJ4xvg4xwUp3amfe -e "
+USE zabbixnew;
+SELECT COUNT(*) as template_count FROM hosts WHERE status = 3;
+SELECT COUNT(*) as template_relationships FROM hosts_templates;
+"
+
+====================================================================================
+
+
+
+# Export graphs and graphs_items together
+mysqldump --single-transaction -u root -psJ4xvg4xwUp3amfe \
+  --set-gtid-purged=OFF --no-tablespaces \
+  zabbix graphs graphs_items \
+  > /root/large_graphs.sql &
+
+Import 
+
+echo "Starting triggers import at $(date)"
+time mysql -u root -psJ4xvg4xwUp3amfe zabbixnew < /root/large_graphs.sql
+echo "Triggers import completed at $(date)"	
+
+
+======================================================================================
+
+✅ Migration Status - Major Tables Complete:
+✅ Templates: 548
+✅ Hosts: 20,334
+✅ Items: 3,486,712
+✅ Triggers: ~1.61M
+✅ Functions: Complete
+✅ Graphs: Complete
+
+
+mysql> USE zabbixnew;
+Database changed
+mysql> SELECT
+    ->     'hosts' as table_name, COUNT(*) as count FROM hosts
+    -> UNION ALL SELECT 'items', COUNT(*) FROM items
+    -> UNION ALL SELECT 'triggers', COUNT(*) FROM triggers
+    -> UNION ALL SELECT 'functions', COUNT(*) FROM functions
+    -> UNION ALL SELECT 'graphs', COUNT(*) FROM graphs
+    -> UNION ALL SELECT 'graphs_items', COUNT(*) FROM graphs_items;
++--------------+---------+
+| table_name   | count   |
++--------------+---------+
+| hosts        |   20331 |
+| items        | 3482889 |
+| triggers     | 1630032 |
+| functions    | 3040671 |
+| graphs       |  722214 |
+| graphs_items | 1560599 |
++--------------+---------+
+6 rows in set (5.14 sec)
+
+mysql> -- Check the total size of zabbixnew
+mysql> SELECT
+    ->     ROUND(SUM(data_length + index_length) / 1024 / 1024 / 1024, 2) AS size_gb
+    -> FROM information_schema.tables
+    -> WHERE table_schema = 'zabbixnew';
++---------+
+| size_gb |
++---------+
+|    3.90 |
++---------+
+1 row in set (0.67 sec)
+
+mysql>
+
+
+===========================================================
+
+
+Final step : 
+
+environment:
+  - DB_SERVER_HOST=192.168.12.65
+  - MYSQL_DATABASE=zabbixnew          # Add this line
+  - MYSQL_USER=root
+  - MYSQL_PASSWORD=sJ4xvg4xwUp3amfe
+  
+  
+  
+  
+  TEST Verification : 
+  
+  
+ OLD :
+
+
+-- Final verification of all major tables
+USE zabbix;
+SELECT 
+    'hosts' as table_name, COUNT(*) as count FROM hosts
+UNION ALL SELECT 'items', COUNT(*) FROM items
+UNION ALL SELECT 'triggers', COUNT(*) FROM triggers  
+UNION ALL SELECT 'functions', COUNT(*) FROM functions
+UNION ALL SELECT 'graphs', COUNT(*) FROM graphs
+UNION ALL SELECT 'graphs_items', COUNT(*) FROM graphs_items;
+ 
+ 
+  
+  -- Final verification of all major tables
+USE zabbixnew;
+SELECT 
+    'hosts' as table_name, COUNT(*) as count FROM hosts
+UNION ALL SELECT 'items', COUNT(*) FROM items
+UNION ALL SELECT 'triggers', COUNT(*) FROM triggers  
+UNION ALL SELECT 'functions', COUNT(*) FROM functions
+UNION ALL SELECT 'graphs', COUNT(*) FROM graphs
+UNION ALL SELECT 'graphs_items', COUNT(*) FROM graphs_items;
+
+
+
+
+  
+
+

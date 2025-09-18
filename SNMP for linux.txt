@@ -1,0 +1,124 @@
+SNMP
+
+
+
+ctrls-mgr@AMI1U-REDIS-01:~$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:           1.9Gi       528Mi       339Mi       0.0Ki       1.0Gi       1.2Gi
+Swap:          3.8Gi       126Mi       3.7Gi
+ctrls-mgr@AMI1U-REDIS-01:~$
+
+
+
+[root@zabbix5-proxy-template ~]# snmpwalk -v 3 -l authPriv -u red-Indian -a sha256 -A Redindian12} -x aes128 -X Redindian12} 172.18.11.51 .1.3.6.1.4.1.2021.4.11.0
+UCD-SNMP-MIB::memTotalFree.0 = INTEGER: 4237400 kB
+[root@zabbix5-proxy-template ~]#
+
+==================================================
+
+
+To set up CPU monitoring for a Linux device using SNMP, you'll need to follow these steps:
+ 
+## 1. Install and Configure SNMP on the Linux Device
+ 
+If not already installed:
+ 
+```bash
+# For Debian/Ubuntu
+sudo apt-get install snmpd snmp
+ 
+# For RHEL/CentOS
+sudo yum install net-snmp net-snmp-utils
+```
+ 
+## 2. Configure SNMP
+ 
+Edit the SNMP configuration file:
+ 
+```bash
+sudo nano /etc/snmp/snmpd.conf
+```
+ 
+Add or modify these settings for SNMPv3 (similar to your current setup):
+ 
+```
+# Create SNMPv3 user with authentication and privacy
+createUser red-Indian SHA256 "Redindian12}" AES "Redindian12}"
+ 
+# Give access to this user
+rouser red-Indian authpriv
+ 
+# Enable system monitoring
+view systemview included .1.3.6.1.2.1.25.1.1
+view systemview included .1.3.6.1.4.1.2021
+view systemview included .1.3.6.1.2.1.1
+view systemview included .1.3.6.1.2.1.2
+view systemview included .1.3.6.1.2.1.4
+ 
+# Make CPU statistics viewable
+extend cpuload /bin/sh -c 'cat /proc/loadavg'
+```
+ 
+## 3. Restart SNMP Service
+ 
+```bash
+sudo systemctl restart snmpd
+```
+ 
+## 4. Test CPU Monitoring with SNMP
+ 
+For CPU load average:
+ 
+```bash
+snmpwalk -v 3 -l authPriv -u red-Indian -a sha256 -A "Redindian12}" -x aes128 -X "Redindian12}" localhost .1.3.6.1.4.1.2021.10
+```
+ 
+For CPU usage:
+ 
+```bash
+snmpwalk -v 3 -l authPriv -u red-Indian -a sha256 -A "Redindian12}" -x aes128 -X "Redindian12}" localhost .1.3.6.1.4.1.2021.11
+```
+ 
+## 5. Set Up in Monitoring System (like Zabbix)
+ 
+If you're using Zabbix (as it appears from your hostname):
+ 
+1. Go to **Configuration → Hosts**
+2. Create a new host or select an existing one
+3. In the **Interfaces** tab, add an SNMP interface
+4. In the **SNMP** section, set:
+   - Version: SNMPv3
+   - Security name: red-Indian
+   - Security level: authPriv
+   - Authentication protocol: SHA256
+   - Authentication passphrase: Redindian12}
+   - Privacy protocol: AES128
+   - Privacy passphrase: Redindian12}
+5. Add these SNMP OIDs for CPU monitoring:
+- 1-minute load: `.1.3.6.1.4.1.2021.10.1.3.1`
+- 5-minute load: `.1.3.6.1.4.1.2021.10.1.3.2`
+- 15-minute load: `.1.3.6.1.4.1.2021.10.1.3.3`
+- CPU user time: `.1.3.6.1.4.1.2021.11.9.0`
+- CPU system time: `.1.3.6.1.4.1.2021.11.10.0`
+- CPU idle time: `.1.3.6.1.4.1.2021.11.11.0`
+ 
+You can then create triggers and graphs based on these metrics to monitor CPU performance.
+
+
+NEW :::
+
+
+workging:
+
+snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12} 10.10.11.2
+
+not working
+
+snmpwalk -v3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1Indian12} 10.10.11.2
+
+
+
+
+
+
+

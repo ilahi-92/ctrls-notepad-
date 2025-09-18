@@ -1,0 +1,42 @@
+changes made to Ctrls DB.
+
+mysql -uroot -psJ4xvg4xwUp3amfe -e "SHOW VARIABLES LIKE '%timeout%';"
+
+mysql: [Warning] Using a password on the command line interface can be insecure.
++-----------------------------------+----------+
+| Variable_name                     | Value    |
++-----------------------------------+----------+
+| connect_timeout                   | 10       |
+| delayed_insert_timeout            | 300      |
+| have_statement_timeout            | YES      |
+| innodb_flush_log_at_timeout       | 1        |
+| innodb_lock_wait_timeout          | 50       |
+| innodb_rollback_on_timeout        | OFF      |
+| interactive_timeout               | 28800    |
+| lock_wait_timeout                 | 31536000 |
+| mysqlx_connect_timeout            | 30       |
+| mysqlx_idle_worker_thread_timeout | 60       |
+| mysqlx_interactive_timeout        | 28800    |
+| mysqlx_port_open_timeout          | 0        |
+| mysqlx_read_timeout               | 30       |
+| mysqlx_wait_timeout               | 28800    |
+| mysqlx_write_timeout              | 60       |
+| net_read_timeout                  | 30       |
+| net_write_timeout                 | 60       |
+| replica_net_timeout               | 60       |
+| rpl_stop_replica_timeout          | 31536000 |
+| rpl_stop_slave_timeout            | 31536000 |
+| slave_net_timeout                 | 60       |
+| ssl_session_cache_timeout         | 300      |
+| wait_timeout                      | 28800    |
++-----------------------------------+----------+
+root@CS-MS-ZBX6-HYD-DB01-Primary:~#
+
+# Set timeout values to 10 minutes (600 seconds)
+mysql -uroot -psJ4xvg4xwUp3amfe -e "SET GLOBAL wait_timeout=600;"
+mysql -uroot -psJ4xvg4xwUp3amfe -e "SET GLOBAL interactive_timeout=600;"
+
+
+restarted mysql
+
+

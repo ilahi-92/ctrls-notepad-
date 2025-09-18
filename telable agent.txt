@@ -1,0 +1,92 @@
+Tenable agent custom monitoring : 
+
+mkdir -p /etc/zabbix/scripts
+
+vi /etc/zabbix/scripts/check_tenable_agent.sh
+
+#!/bin/bash
+# /etc/zabbix/scripts/check_tenable_agent.sh
+
+if systemctl is-active nessusagent &>/dev/null; then
+  echo 1
+else
+  echo 0
+fi
+
+
+chmod +x /etc/zabbix/scripts/check_tenable_agent.sh
+
+
+Test:
+
+/etc/zabbix/scripts/check_tenable_agent.sh  
+
+sudo -u zabbix /etc/zabbix/scripts/check_tenable_agent.sh
+
+
+File Permissions:
+
+chmod 755 /etc/zabbix/scripts/check_tenable_agent.sh
+chown root:zabbix /etc/zabbix/scripts/check_tenable_agent.sh
+
+chmod 755 /etc/zabbix/scripts
+chown root:zabbix /etc/zabbix/scripts
+
+
+Agent : 
+
+vi /etc/zabbix/zabbix_agentd.d/tenable_agent.conf - add below line
+
+
+UserParameter=tenable.agent.status,/etc/zabbix/scripts/check_tenable_agent.sh
+
+chmod 644 /etc/zabbix/zabbix_agentd.d/tenable_agent.conf
+
+
+systemctl restart zabbix-agent
+
+
+
+=================================================
+
+
+[root@MUMAUAPLCLRAP01 zabbix]# cd /etc/zabbix/scripts/
+[root@MUMAUAPLCLRAP01 scripts]# ls -ltrh
+total 8.0K
+-rwxr-xr-x 1 root root 139 Mar 24 14:25 check_tenable_agent.sh
+-rwxr-xr-x 1 root root 105 Mar 24 16:11 tenable_last_connect.sh
+[root@MUMAUAPLCLRAP01 scripts]# ./check_tenable_agent.sh
+1
+[root@MUMAUAPLCLRAP01 scripts]# cat check_tenable_agent.sh
+ #!/bin/bash
+# /etc/zabbix/scripts/check_tenable_agent.sh
+
+if systemctl is-active nessusagent &>/dev/null; then
+  echo 1
+else
+  echo 0
+fi
+
+[root@MUMAUAPLCLRAP01 scripts]# systemctl status nessusagent
+● nessusagent.service - The Nessus Client Agent
+   Loaded: loaded (/usr/lib/systemd/system/nessusagent.service; enabled; vendor preset: disabled)
+   Active: active (running) since Thu 2025-03-20 02:52:13 IST; 2 weeks 5 days ago
+ Main PID: 1114 (nessus-service)
+    Tasks: 11 (limit: 205475)
+   Memory: 1.7G
+   CGroup: /system.slice/nessusagent.service
+           ├─  1114 /opt/nessus_agent/sbin/nessus-service -q
+           ├─451280 nessusd -q
+           └─451281 /opt/nessus_agent/sbin/nessus-agent-module -q
+
+Apr 05 04:56:21 MUMAUAPLCLRAP01 nessus-service[380209]: Cached 215 plugin libs in 78msec
+Apr 05 04:56:21 MUMAUAPLCLRAP01 nessus-service[380209]: Cached 215 plugin libs in 67msec
+Apr 05 05:00:52 MUMAUAPLCLRAP01 nessus-service[381722]: Cached 215 plugin libs in 76msec
+Apr 05 05:00:52 MUMAUAPLCLRAP01 nessus-service[381722]: Cached 215 plugin libs in 82msec
+Apr 06 03:36:19 MUMAUAPLCLRAP01 nessus-service[403959]: Cached 215 plugin libs in 88msec
+Apr 06 03:36:19 MUMAUAPLCLRAP01 nessus-service[403959]: Cached 215 plugin libs in 74msec
+Apr 07 03:40:46 MUMAUAPLCLRAP01 nessus-service[427625]: Cached 215 plugin libs in 76msec
+Apr 07 03:40:46 MUMAUAPLCLRAP01 nessus-service[427625]: Cached 215 plugin libs in 74msec
+Apr 08 03:42:18 MUMAUAPLCLRAP01 nessus-service[451281]: Cached 215 plugin libs in 78msec
+Apr 08 03:42:18 MUMAUAPLCLRAP01 nessus-service[451281]: Cached 215 plugin libs in 68msec
+[root@MUMAUAPLCLRAP01 scripts]#

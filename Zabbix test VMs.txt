@@ -1,0 +1,17 @@
+VMname:ZabbixTest_VM1
+IP:202.143.97.184
+user:root
+password:CatR9bshEeNFi4cD4B
+SSH:2232
+ 
+ 
+VMname:ZabbixTest_VM2
+IP:202.143.97.88
+user:root
+password:CatR9bshEeNFi4cD4B
+SSH:2232
+
+Xen - 
+
+sudo -u zabbix xe host-list 
+

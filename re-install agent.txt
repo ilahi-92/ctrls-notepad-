@@ -1,0 +1,191 @@
+Fardeen SF
+
+13818
+
+I@mbrucewayne777
+
+Fixed
+
+10.44.2.56
+
+10.44.2.59
+
+unx40423
+PageSting84
+ 
+proxy
+
+ AEML-DC-PROXY_10.44.7.135	10.44.7.135
+2232	root	R@ut.p123
+
+
+
+
+10.44.7.131 - Agent conflict 
+
+Resolution 
+
+sudo systemctl stop zabbix_agentd
+sudo systemctl disable zabbix_agentd
+sudo systemctl stop zabbix-agent
+sudo systemctl disable zabbix-agent
+
+# Remove all Zabbix packages
+sudo zypper remove -u 'zabbix*' --clean-deps
+
+# Clean up any remaining files and directories
+sudo rm -rf /etc/zabbix
+sudo rm -rf /var/log/zabbix
+sudo rm -rf /var/run/zabbix
+sudo rm -rf /var/lib/zabbix
+sudo rm -rf /usr/lib/systemd/system/zabbix*
+
+# Reload systemd to recognize the changes
+sudo systemctl daemon-reload
+
+
+===
+
+
+if zabbix agent is still showing as running :
+
+sudo zypper search -i zabbix
+
+
+sudo zypper remove -y zabbix-agent
+
+sudo systemctl daemon-reexec
+
+
+sudo systemctl reset-failed zabbix-agent
+
+systemctl status zabbix-agent
+
+
+=========================================================
+
+
+2nd:
+
+DCAEESSDEV:/home/unx40423 # sudo zypper remove -y zabbix-agent
+Reading installed packages...
+Resolving package dependencies...
+
+The following package is going to be REMOVED:
+  zabbix-agent
+
+1 package to remove.
+After the operation, 2.3 MiB will be freed.
+Continue? [y/n/v/...? shows all options] (y): y
+Removed /etc/systemd/system/multi-user.target.wants/zabbix-agent.service.
+Removed /etc/systemd/system/disabled-service.service.
+warning: file /etc/zabbix/zabbix_agentd.d: remove failed: No such file or directory
+warning: file /etc/zabbix/zabbix_agentd.conf: remove failed: No such file or directory
+rm: cannot remove '/var/lib/systemd/migrated/zabbix-agent': No such file or directory
+(1/1) Removing zabbix-agent-6.4.17-release1.sles15.x86_64 .............................................................................................................................[done]
+There are running programs which still use files and libraries deleted or updated by recent upgrades. They should be restarted to benefit from the latest updates. Run 'zypper ps -s' to list these programs.
+
+DCAEESSDEV:/home/unx40423 # sudo systemctl daemon-reexec
+DCAEESSDEV:/home/unx40423 # sudo systemctl reset-failed zabbix-agent
+Failed to reset failed state of unit zabbix-agent.service: Unit zabbix-agent.service not loaded.
+DCAEESSDEV:/home/unx40423 # systemctl status zabbix-agent
+Unit zabbix-agent.service could not be found.
+DCAEESSDEV:/home/unx40423 # ip r
+default via 10.44.2.1 dev eth0
+10.44.2.0/25 dev eth0 proto kernel scope link src 10.44.2.59
+10.44.6.128/25 dev eth1 proto kernel scope link src 10.44.6.172
+10.44.9.0/25 dev eth2 proto kernel scope link src 10.44.9.41
+DCAEESSDEV:/home/unx40423 # systemctl status zabbix-agent
+Unit zabbix-agent.service could not be found.
+DCAEESSDEV:/home/unx40423 # cd /etc/z
+zsh_completion.d/ zypp/
+DCAEESSDEV:/home/unx40423 # cd /etc/z
+zsh_completion.d/ zypp/
+DCAEESSDEV:/home/unx40423 # cd /etc/z
+zsh_completion.d/ zypp/
+DCAEESSDEV:/home/unx40423 # sudo zypper search -i zabbix
+Loading repository data...
+Reading installed packages...
+No matching items found.
+
+    Note: For an extended search including not yet activated remote resources please use 'zypper
+    search-packages'.
+DCAEESSDEV:/home/unx40423 # systemctl status zabbix-agent
+Unit zabbix-agent.service could not be found.
+DCAEESSDEV:/home/unx40423 # hostname
+DCAEESSDEV
+DCAEESSDEV:/home/unx40423 #
+
+
+
+^C[root@aeml-dc-zabbix-proxy ~]# zabbix_get -k agent.hostname -s 10.44.2.59
+AEML_AEML-DC-DCAEESSDEV_Linux_10.44.2.59
+[root@aeml-dc-zabbix-proxy ~]#
+
+
+DCAEESSDEV:/home/unx40423 # cat /etc/os-release
+NAME="SLES"
+VERSION="15-SP5"
+VERSION_ID="15.5"
+PRETTY_NAME="SUSE Linux Enterprise Server 15 SP5"
+ID="sles"
+ID_LIKE="suse"
+ANSI_COLOR="0;32"
+CPE_NAME="cpe:/o:suse:sles:15:sp5"
+DOCUMENTATION_URL="https://documentation.suse.com/"
+DCAEESSDEV:/home/unx40423 #
+
+
+========
+
+
+DCAEESSDEV:/home/unx40423 # ps aux | grep -i zabbix
+zabbix   32066  0.0  0.0   4888  2620 ?        S    Feb23   3:24 /opt/zabbix/sbin/zabbix_agentd: listener #1 [waiting for connection]
+zabbix   32067  0.0  0.0   4888  2616 ?        S    Feb23   3:20 /opt/zabbix/sbin/zabbix_agentd: listener #2 [waiting for connection]
+zabbix   32068  0.0  0.0   4888  2612 ?        S    Feb23   3:20 /opt/zabbix/sbin/zabbix_agentd: listener #3 [waiting for connection]
+zabbix   32069  0.0  0.0   4736  2200 ?        S    Feb23   0:40 /opt/zabbix/sbin/zabbix_agentd: active checks #1 [idle 1 sec]
+root     33525  0.0  0.0   5644   808 pts/4    S+   15:30   0:00 grep --color=auto -i zabbix
+
+
+=========
+
+
+sudo pkill -f zabbix_agentd
+
+
+DCAEESSDEV:/home/unx40423 # sudo find /etc -name "*zabbix*" 2>/dev/null
+
+/etc/init.d/rc3.d/S50zabbix_agentd
+/etc/init.d/rc3.d/K50zabbix_agentd
+/etc/init.d/zabbix_agentd
+/etc/sudoers.d/zabbix
+/etc/systemd/system/multi-user.target.wants/zabbix-agentd.service
+/etc/systemd/system/multi-user.target.wants/zabbix_agentd.service
+/etc/systemd/system/runlevel3.target.wants/zabbix_agentd.service
+/etc/systemd/system/zabbix_agentd.service.d
+/etc/systemd/system/zabbix-agent.service.d
+
+=========================
+
+
+sudo systemctl disable zabbix_agentd
+sudo systemctl disable zabbix-agentd
+sudo rm /etc/systemd/system/multi-user.target.wants/zabbix-agentd.service
+sudo rm /etc/systemd/system/multi-user.target.wants/zabbix_agentd.service
+sudo rm /etc/systemd/system/runlevel3.target.wants/zabbix_agentd.service
+sudo rm -rf /etc/systemd/system/zabbix_agentd.service.d
+sudo rm -rf /etc/systemd/system/zabbix-agent.service.d
+
+DCAEESSDEV:/home/unx40423 # sudo rm /etc/init.d/rc3.d/S50zabbix_agentd
+sudo rm /etc/init.d/rc3.d/K50zabbix_agentd
+sudo rm /etc/init.d/zabbix_agentdrm: cannot remove '/etc/init.d/rc3.d/S50zabbix_agentd': No such file or directory
+DCAEESSDEV:/home/unx40423 #
+DCAEESSDEV:/home/unx40423 # sudo rm -rf /opt/zabbix
+
+DCAEESSDEV:/home/unx40423 # sudo rm /etc/sudoers.d/zabbix
+
+DCAEESSDEV:/home/unx40423 # sudo systemctl daemon-reload
+
+DCAEESSDEV:/home/unx40423 # sudo systemctl daemon-reload
+
+

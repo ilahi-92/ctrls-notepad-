@@ -1,0 +1,234 @@
+rpm -qa | grep zabbix
+
+systemctl -ll | grep -i zabb
+
+DCAEGRCP:/home/unx40423 # rpm -qa | grep zabbix
+DCAEGRCP:/home/unx40423 # systemctl -ll | grep -i zabb
+● zabbix_agentd.service                                                                            loaded failed failed    LSB: Starts Zabbix_Agentd
+DCAEGRCP:/home/unx40423 # systemctl status zabbix-agent
+● zabbix-agent.service
+   Loaded: not-found (Reason: No such file or directory)
+   Active: inactive (dead)
+
+Mar 10 11:19:10 DCAEGRCP systemd[1]: zabbix-agent.service: Service RestartSec=100ms expired, scheduling restart.
+Mar 10 11:19:10 DCAEGRCP systemd[1]: Stopped Zabbix Agent.
+Mar 10 11:19:10 DCAEGRCP systemd[1]: zabbix-agent.service: Start request repeated too quickly.
+Mar 10 11:19:10 DCAEGRCP systemd[1]: Failed to start Zabbix Agent.
+Mar 10 11:19:10 DCAEGRCP systemd[1]: zabbix-agent.service: Unit entered failed state.
+Mar 10 11:19:10 DCAEGRCP systemd[1]: zabbix-agent.service: Failed with result 'start-limit'.
+Mar 10 11:20:32 DCAEGRCP systemd[1]: Stopped Zabbix Agent.
+Mar 10 11:25:36 DCAEGRCP systemd[1]: Stopped Zabbix Agent.
+Mar 10 11:44:44 DCAEGRCP systemd[1]: Stopped Zabbix Agent.
+Mar 10 11:45:48 DCAEGRCP systemd[1]: Stopped zabbix-agent.service.
+DCAEGRCP:/home/unx40423 #
+
+
+
+
+
+# First, stop and disable both possible service names
+sudo systemctl stop zabbix_agentd
+sudo systemctl disable zabbix_agentd
+sudo systemctl stop zabbix-agent
+sudo systemctl disable zabbix-agent
+
+# Remove all Zabbix packages
+sudo zypper remove -u 'zabbix*' --clean-deps
+
+# Clean up any remaining files and directories
+sudo rm -rf /etc/zabbix
+sudo rm -rf /var/log/zabbix
+sudo rm -rf /var/run/zabbix
+sudo rm -rf /var/lib/zabbix
+sudo rm -rf /usr/lib/systemd/system/zabbix*
+
+# Reload systemd to recognize the changes
+sudo systemctl daemon-reload
+
+
+===============================================================
+
+
+
+# Add the Zabbix repository for SUSE
+sudo rpm -Uvh https://repo.zabbix.com/zabbix/6.4/suse/x86_64/zabbix-release-6.4-1.sles15.noarch.rpm
+
+# Refresh repository
+sudo zypper refresh
+
+# Install Zabbix agent 6.4.17
+sudo zypper install -y zabbix-agent-6.4.17
+
+# Verify installation
+rpm -qa | grep zabbix
+
+================================================================================
+
+
+# Back up the default configuration
+sudo cp /etc/zabbix/zabbix_agentd.conf /etc/zabbix/zabbix_agentd.conf.bak
+
+# Edit the configuration file
+sudo vi /etc/zabbix/zabbix_agentd.conf
+
+
+Server=your_zabbix_server_ip
+ServerActive=your_zabbix_server_ip
+Hostname=your_host_name
+
+
+
+
+
+======================================================================================
+
+
+# Reload systemd to ensure it sees the new service
+sudo systemctl daemon-reload
+
+# Enable and start the service
+sudo systemctl enable zabbix-agent
+sudo systemctl start zabbix-agent
+
+# Check status
+sudo systemctl status zabbix-agent
+
+
+===============================================
+
+# View the last 50 lines of the Zabbix agent log
+sudo tail -n 50 /var/log/zabbix/zabbix_agentd.log
+
+# Or check systemd logs for the service
+sudo journalctl -u zabbix-agent -n 50 --no-pager
+
+===========================
+
+
+2nd
+
+
+
+# Create a temporary systemd override to force systemd to forget about the zabbix services
+sudo mkdir -p /etc/systemd/system/zabbix_agentd.service.d/
+echo "[Install]
+Alias=disabled-service.service" | sudo tee /etc/systemd/system/zabbix_agentd.service.d/disable.conf
+
+sudo mkdir -p /etc/systemd/system/zabbix-agent.service.d/
+echo "[Install]
+Alias=disabled-service.service" | sudo tee /etc/systemd/system/zabbix-agent.service.d/disable.conf
+
+# Reload systemd
+sudo systemctl daemon-reload
+
+# Reset failed units
+sudo systemctl reset-failed zabbix_agentd.service
+sudo systemctl reset-failed zabbix-agent.service
+
+======
+
+
+# Add the Zabbix repository (adjust for your SUSE version if needed)
+sudo rpm -Uvh https://repo.zabbix.com/zabbix/6.4/suse/x86_64/zabbix-release-6.4-1.sles15.noarch.rpm
+
+# Check that repositories are properly added
+sudo zypper lr -d
+
+# If repositories are still not showing up, manually add one
+sudo zypper addrepo https://repo.zabbix.com/zabbix/6.4/suse/x86_64/ zabbix
+
+# Update repo cache
+sudo zypper refresh
+
+# Install Zabbix agent 6.4.17
+sudo zypper install zabbix-agent-6.4.17
+
+=====
+
+
+# Check if package is installed
+rpm -qa | grep zabbix
+
+# Check if service file exists
+ls -la /usr/lib/systemd/system/zabbix*
+
+
+=====
+
+
+sudo rm -rf /etc/systemd/system/zabbix_agentd.service.d/
+sudo rm -rf /etc/systemd/system/zabbix-agent.service.d/
+sudo systemctl daemon-reload
+
+======
+
+
+# Configure the agent
+sudo vi /etc/zabbix/zabbix_agentd.conf
+# Set Server=your_zabbix_server_ip, ServerActive=your_zabbix_server_ip, Hostname=your_hostname
+
+# Start and enable the service
+sudo systemctl start zabbix-agent
+sudo systemctl enable zabbix-agent
+sudo systemctl status zabbix-agent
+
+
+==============================================
+
+
+sudo rpm -Uvh https://repo.zabbix.com/zabbix/6.4/suse/x86_64/zabbix-release-6.4-1.sles12.noarch.rpm
+
+====================================================
+
+Main Fix
+
+# First, stop and disable both possible service names
+sudo systemctl stop zabbix_agentd
+sudo systemctl disable zabbix_agentd
+sudo systemctl stop zabbix-agent
+sudo systemctl disable zabbix-agent
+
+# Remove all Zabbix packages
+sudo zypper remove -u 'zabbix*' --clean-deps
+
+# Clean up any remaining files and directories
+sudo rm -rf /etc/zabbix
+sudo rm -rf /var/log/zabbix
+sudo rm -rf /var/run/zabbix
+sudo rm -rf /var/lib/zabbix
+sudo rm -rf /usr/lib/systemd/system/zabbix*
+
+# Reload systemd to recognize the changes
+sudo systemctl daemon-reload
+
+
+1012  2025-03-10 12:11:38 sudo mkdir -p /etc/systemd/system/zabbix_agentd.service.d/
+1013  2025-03-10 12:11:43 echo "[Install]
+ 
+Alias=disabled-service.service" | sudo tee /etc/systemd/system/zabbix_agentd.service.d/disable.conf
+1014  2025-03-10 12:12:05 sudo mkdir -p /etc/systemd/system/zabbix-agent.service.d/
+1015  2025-03-10 12:12:09 echo "[Install]
+Alias=disabled-service.service" | sudo tee /etc/systemd/system/zabbix-agent.service.d/disable.conf
+1016  2025-03-10 12:12:27 sudo systemctl daemon-reload
+1017  2025-03-10 12:12:31 sudo systemctl reset-failed zabbix_agentd.service
+1018  2025-03-10 12:12:38 sudo systemctl reset-failed zabbix-agent.service
+
+
+if zabbix agent is still showing as running :
+
+sudo zypper search -i zabbix
+
+
+sudo zypper remove -y zabbix-agent
+
+sudo systemctl daemon-reexec
+
+
+sudo systemctl reset-failed zabbix-agent
+
+systemctl status zabbix-agent
+
+
+
+
+

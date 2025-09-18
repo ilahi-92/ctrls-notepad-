@@ -1,0 +1,254 @@
+Emcure : 
+
+Dell - idrac - reference  - 10.100.110.224 - emonitor - not working  - SNMP configuration - 10.21.11.159
+
+NEW - 10.21.11.151 - HP  - Test - 10.21.11.159
+
+Lenovo - XCC - SR650 7Z73
+
+HP - ILO
+
+
+
+Emcure XCC setup :
+
+Docker - 
+
+No Proxy -
+
+[root@emcure-dc-proxy ~]# zabbix_get -k agent.hostname -s 10.21.16.13
+EMHNBIA
+[root@emcure-dc-proxy ~]# history | grep snmp
+   52  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12} 10.9.10.100
+   55  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12} 10.9.10.100
+   67  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12} 10.6.0.102
+   69  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12} 10.192.0.9
+  142  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12} 45.113.188.216
+  143  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12} 10.40.12.26
+  171  history grep |snmp
+  172  history grep snmp
+  173  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12}  192.168.106.131
+  174  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12}  10.35.255.28
+  175  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12} 10.35.255.28
+  176  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12}  10.35.255.26
+  177  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12}   10.35.255.30
+  178  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12}   10.35.255.31
+  180  history grep |snmp
+  181  history| grep snmp
+  182  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12} 10.31.100.23
+  183  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12} 10.31.101.51
+  184  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12} 10.32.107.23
+  185  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12} 10.32.1.14
+  236  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.31.100.23
+  239  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.32.107.23
+  257  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.100.253
+  258  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.28
+  260  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.28
+  261  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.26
+  262  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.30
+  263  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.31
+  268  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.28
+  273  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.26
+  274  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.30
+  275  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.31
+  276  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.26
+  277  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.28
+  278  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.26
+  287  history | grep snmp
+  288  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12}  10.35.255.28
+  290  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12}  10.35.255.26
+  306  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12}   10.35.255.30
+  308  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12}    10.35.255.31
+  389  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12}    10.35.255.31
+  390  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.11
+  391  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.12
+  392  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.13
+  395  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.13
+  396  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.14
+  398  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.14
+  400  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.16
+  404  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.17
+  405  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.21
+  406  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.22
+  407  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.17
+  408  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.21
+  409  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.22
+  411  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.1
+  413  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.11
+  414  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.12
+  415  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.13
+  416  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.14
+  417  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.15
+  418  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.14
+  419  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.54
+  421  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.55
+  422  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.100.55
+  423  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.100.56
+  424  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.100.254
+  425  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.100.253
+  426  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.28
+  427  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.26
+  428  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.30
+  429  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.31
+  430  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.16
+  431  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.17
+  432  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.22
+  433  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.21
+  444  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.1
+  445  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.11
+  446  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.12
+  447  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.13
+  448  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.14
+  449  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.16
+  450  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.17
+  451  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.22
+  452  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.21
+  490  history |grep snmp
+  491  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.13
+  492  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.11
+  493  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.12
+  494  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.14
+  495  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.16
+  496  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.17
+  497  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.22
+  498  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.21
+  500  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.1
+  502  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.11
+  504  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.12
+  506  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.13
+  508  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.14
+  509  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.16
+  512  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.17
+  513  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.22
+  514  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.2
+  538  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.35.255.1
+  728  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 172.22.6.207
+  733  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12} 10.25.1.9
+  775  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12}10.35.255.33
+  776  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12} 10.35.255.33
+  785  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12} 10.35.255.43
+  786  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12 10.35.255.43
+  788  snmpwalk -v2c 10.35.255.43 -c red-indian
+  789  snmpwalk -v2c 10.35.255.33 -c red-indian
+  790  snmpwalk -v2c 10.35.255.25 -c red-indian
+  791  snmpwalk -v2c 10.35.255.41 -c red-indian
+  792  snmpwalk -v2c 10.35.255.27 -c red-indian
+  793  snmpwalk -v2 10.35.255.42 -c red-indian
+  806  snmpwalk -v2c snmpwalk -v2c 45.113.188.216 -c red-indian -c red-indian
+  807  snmpwalk -v2c 10.35.255.25 -c red-indian
+  808  snmpwalk -v2c 10.35.255.41 -c red-indian
+  809  snmpwalk -v2c 10.35.255.27 -c red-indian
+  810  snmpwalk -v2c 10.35.255.42 -c red-indian
+  811  snmpwalk -v2c 10.35.255.43 -c red-indian
+  812  snmpwalk -v2c 10.35.255.44 -c red-indian
+  813  snmpwalk -v2c 10.35.255.45 -c red-indian
+  814  snmpwalk -v2c 10.35.255.33 -c red-indian
+  815  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12} 10.35.255.44
+  841  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12} 10.35.255.42
+  843  snmpwalk -v2c 10.35.255.42 -c red-indian infra_snmp
+  844  snmpwalk -v2c 10.35.255.42 -c red-indian
+  846  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12} 10.35.255.42
+  872  snmpwalk -v 3 -u red-indian -l authPriv -a sha -A redindian123 -x aes -X Red1indan12 <IP>
+  873  snmpwalk -v 3 -u red-indian -l authPriv -a sha -A redindian123 -x aes -X Red1indan12 10.35.255.15
+  874  snmpwalk -v 3 -u red-indian -l authPriv -a sha -A redindian123 -x aes -X Red1indan12 10.35.255.15
+  875  snmpwalk -v 3 -u red-indian -l authPriv -a sha -A redindian123 -x aes -X Red1indan12 10.35.255.17
+  876  snmpwalk -v 3 -u red-indian -l authPriv -a sha -A redindian123 -x aes -X Red1indan12 10.35.255.14
+  877  snmpwalk -v 3 -u red-indian -l authPriv -a sha -A redindian123 -x aes -X Red1indan12 10.35.255.45
+  878  snmpwalk -v 3 -u red-indian -l authPriv -a sha -A redindian123 -x aes -X Red1indan12 10.35.255.59
+  882  snmpwalk -v 2c -c red-indian 10.35.
+  883  snmpwalk -v 3 -u red-indian -l authPriv -a sha -A redindian123 -x aes -X Red1indan12 10.35.255.11
+  884  snmpwalk -v 3 -u red-indian -l authPriv -a sha -A redindian123 -x aes -X Red1indan12 10.35.255.12
+  885  snmpwalk -v 3 -u red-indian -l authPriv -a sha -A redindian123 -x aes -X Red1indan12 10.35.255.54
+  886  snmpwalk -v 3 -u red-indian -l authPriv -a sha -A redindian123 -x aes -X Red-indan12 10.35.255.54
+  887  snmpwalk -v 3 -u red-indian -l authPriv -a sha -A redindian123 -x aes -X Redindan123 10.35.255.54
+  888  snmpwalk -v 3 -u red-indian -l authPriv -a sha -A redindian123 -x aes -X Redindan12} 10.35.255.54
+  889  snmpwalk -v 3 -u red-indian -l authPriv -a sha -A redindian123 -x aes -X Red1ndan12} 10.35.255.54
+  890  snmpwalk -v 3 -u red-indian -l authPriv -a sha -A redindian123 -x aes -X Red1indian12} 10.35.255.17
+  891  snmpwalk -v 3 -u red-indian -l authPriv -a sha -A redindian123 -x aes -X Red1indian12} 10.35.255.54
+  892  snmpwalk -v 3 -u red-indian -l authPriv -a sha -A redindian123 -x aes -X Red1indian12} 10.35.255.11
+  894  snmpwalk -v 3 -u red-indian -l authPriv -a sha -A redindian123 -x aes -X Red1indian12} 10.23.255.54
+  895  snmpwalk -v 3 -u red-indian -l authPriv -a sha -A redindian123 -x aes -X Red1indian12} 10.22.255.54
+  896  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X redindian123 10.35.255.17\
+  897  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X redindian123 10.35.255.17
+  898  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X redindian123 10.22.255.54
+  899  snmpwalk -v 3 -u red-indian -l authPriv -a sha -A redindian123 -x AES -X Red1indian12} 10.22.255.54
+  900  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X redindian123 10.23.255.54
+  902  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12}  10.35.255.28
+  903  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12}  10.35.255.17
+  904  snmpwalk -v 3 -l authPriv -u red-indian -a sha -A redindian123 -x aes -X Red1indan12}  10.35.255.28
+  905  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12} 10.35.255.15
+  906  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12} 10.35.255.17
+  907  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12} 10.35.255.14
+  908  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12} 10.35.255.45\
+  909  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12} 10.35.255.45
+  910  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12} 10.35.255.59
+  911  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12} 10.35.255.14
+  912  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12} 10.35.255.15
+  913  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12} 10.35.255.14
+  914  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12} 10.35.255.15
+  915  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12} 10.35.255.45
+  916  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12} 10.35.255.59
+  917  snmpwalk -v 3 -l authPriv -u SNMP_USER -a SHA -A redindian123 -x AES -X Red1indan12} 10.35.255.45
+  920  snmpwalk -v 3 -l authPriv -u red-indian -a SHA -A redindian123 -x AES -X Red1indan12} 10.35.255.14
+  999  history | grep snmp
+[root@emcure-dc-proxy ~]#
+
+
+
+
+https://www.zabbix.com/forum/zabbix-help/441969-template-for-lenovo-servers
+
+
+https://www.zabbix.com/forum/zabbix-help/467293-help-with-lenovo-server-monitoring-xcc
+
+
+
+[root@emcure-dc-proxy ~]# snmpwalk -v3 -l authPriv -u XCCUSER -a SHA -A Redindian123 -x AES -X Redindian123 10.31.100.11
+snmpwalk: Unknown user name
+[root@emcure-dc-proxy ~]# snmpwalk -v3 -l authPriv -u XCCUSER -a SHA -A Redindian123 -x AES -X Redindian123 10.31.100.12
+snmpwalk: Unknown user name
+[root@emcure-dc-proxy ~]# snmpwalk -v3 -l authPriv -u XCCUSER -a SHA -A Redindian123 -x AES -X Redindian123 10.31.100.11
+snmpwalk: Unknown user name
+[root@emcure-dc-proxy ~]# snmpget -v3 -l authNoPriv -u XCCUSER -a SHA -A Redindian123 -D usm 10.31.100.11 1.3.6.1.2.1.1.1.0 2>&1 | grep engineID
+
+[root@emcure-dc-proxy ~]#
+[root@emcure-dc-proxy ~]#
+
+NEW PASSWORD FOR XCCUSER -  red-indian123 RED-INDIAN123
+
+
+
+snmpwalk -v3 -l authPriv -u XCCUSER -a SHA -A Redindian123 -x AES -X Redindian123 -E 0x`echo -n "XCC-7Z73-J9007Z72" | xxd -p` 10.31.100.11
+
+
+
+snmpget -v3 -l authPriv -u XCCUSER -a SHA -A RED-INDIAN123 -x AES -X RED-INDIAN123 -n "0x$(echo -n "XCC-7Z73-J9007Z72" | xxd -p)" 10.31.100.11 SNMPv2-MIB::sysDescr.0
+
+
+snmpget -v3 -l authPriv -u XCCUSER -a MD5 -A Redindian123 -x DES -X Redindian123 10.31.100.11 SNMPv2-MIB::sysDescr.0
+
+
+
+i can login to xclarity with read only access
+
+user name : XCCUSER
+
+password : RED-INDIAN123
+
+
+
+
+snmpwalk -v 3 -l authPriv -u Emcure -a SHA -A redindian123 -x AES -X redindian123  10.21.11.159
+
+snmpwalk -v3 -l authPriv -u XCCUSER -a SHA -A Redindian1234 -x AES -X Redindian1234 10.31.100.11
+
+
+snmpwalk -v3 -l authPriv -u USERID -a SHA -A calvin@123 -x AES -X calvin@123 10.31.100.12
+
+
+USERID
+calvin@123
+
+
+SOPs
+

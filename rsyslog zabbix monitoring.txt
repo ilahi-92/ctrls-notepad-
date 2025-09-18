@@ -1,0 +1,90 @@
+rsyslog agent monitoirng at zabbix dashboard.
+
+zabbix agent automatic restart
+
+sentinelone agent monitoring  
+
+
+NTP : 
+
+
+login as: ctrls
+ctrls@10.100.103.119's password:
+Last login: Fri May 23 18:29:31 2025 from 10.212.134.1
+[ctrls@neslapp_prod ~]$ sudo su
+[root@neslapp_prod ctrls]# cd
+[root@neslapp_prod ~]# clear
+[root@neslapp_prod ~]# systemctl status rsyslog
+● rsyslog.service - System Logging Service
+   Loaded: loaded (/usr/lib/systemd/system/rsyslog.service; enabled; vendor preset: enabled)
+   Active: active (running) since Tue 2025-01-07 21:20:12 IST; 4 months 14 days ago
+     Docs: man:rsyslogd(8)
+           http://www.rsyslog.com/doc/
+ Main PID: 1989 (rsyslogd)
+   Memory: 5.3M
+   CGroup: /system.slice/rsyslog.service
+           └─1989 /usr/sbin/rsyslogd -n
+
+Mar 30 03:16:01 neslapp_prod rsyslogd[1989]:  [origin software="rsyslogd" swVersion="8.24.0-57.el7_9.3" x-pid="1989" x-info="http://www.rsyslog.com"] rsyslogd was HUPed
+Apr 06 03:09:01 neslapp_prod rsyslogd[1989]:  [origin software="rsyslogd" swVersion="8.24.0-57.el7_9.3" x-pid="1989" x-info="http://www.rsyslog.com"] rsyslogd was HUPed
+Apr 09 05:00:01 neslapp_prod rsyslogd[1989]: imjournal: journal reloaded... [v8.24.0-57.el7_9.3 try http://www.rsyslog.com/e/0 ]
+Apr 13 03:12:01 neslapp_prod rsyslogd[1989]:  [origin software="rsyslogd" swVersion="8.24.0-57.el7_9.3" x-pid="1989" x-info="http://www.rsyslog.com"] rsyslogd was HUPed
+Apr 20 03:40:01 neslapp_prod rsyslogd[1989]:  [origin software="rsyslogd" swVersion="8.24.0-57.el7_9.3" x-pid="1989" x-info="http://www.rsyslog.com"] rsyslogd was HUPed
+Apr 27 03:25:01 neslapp_prod rsyslogd[1989]:  [origin software="rsyslogd" swVersion="8.24.0-57.el7_9.3" x-pid="1989" x-info="http://www.rsyslog.com"] rsyslogd was HUPed
+May 04 03:32:02 neslapp_prod rsyslogd[1989]:  [origin software="rsyslogd" swVersion="8.24.0-57.el7_9.3" x-pid="1989" x-info="http://www.rsyslog.com"] rsyslogd was HUPed
+May 09 15:30:02 neslapp_prod rsyslogd[1989]: imjournal: journal reloaded... [v8.24.0-57.el7_9.3 try http://www.rsyslog.com/e/0 ]
+May 11 03:08:01 neslapp_prod rsyslogd[1989]:  [origin software="rsyslogd" swVersion="8.24.0-57.el7_9.3" x-pid="1989" x-info="http://www.rsyslog.com"] rsyslogd was HUPed
+May 18 03:28:01 neslapp_prod rsyslogd[1989]:  [origin software="rsyslogd" swVersion="8.24.0-57.el7_9.3" x-pid="1989" x-info="http://www.rsyslog.com"] rsyslogd was HUPed
+[root@neslapp_prod ~]# systemctl status sentinelone
+● sentinelone.service - Monitor SentinelOne Agent
+   Loaded: loaded (/usr/lib/systemd/system/sentinelone.service; enabled; vendor preset: disabled)
+   Active: active (running) since Fri 2025-05-23 19:06:02 IST; 11min ago
+ Main PID: 78100 (s1-orchestrator)
+   Status: "Starting agent..."
+   Memory: 282.0M
+   CGroup: /system.slice/sentinelone.service
+           ├─78100 s1-orchestrator
+           ├─78130 s1-network
+           ├─78131 s1-scanner
+           ├─78133 s1-agent
+           └─78135 s1-firewall
+
+May 23 19:06:02 neslapp_prod systemd[1]: Started Monitor SentinelOne Agent.
+May 23 19:06:03 neslapp_prod [78133]: DEPRECATED USE in libdispatch client: Setting timer interval to 0 requests a 1ns timer, did you mean FOREVER (a one-shot timer)?; set a...ated to debug
+Hint: Some lines were ellipsized, use -l to show in full.
+[root@neslapp_prod ~]# cat /etc/rsyslog.conf
+# rsyslog configuration file
+
+# For more information see /usr/share/doc/rsyslog-*/rsyslog_conf.html
+# If you experience problems, see http://www.rsyslog.com/doc/troubleshoot.html
+
+#### MODULES ####
+
+# The imjournal module bellow is now used as a message source instead of imuxsock.
+$ModLoad imuxsock # provides support for local system logging (e.g. via logger command)
+$ModLoad imjournal # provides access to the systemd journal
+#$ModLoad imklog # reads kernel messages (the same are read from journald)
+#$ModLoad immark  # provides --MARK-- message capability
+
+# Provides UDP syslog reception
+#$ModLoad imudp
+#$UDPServerRun 514
+
+# Provides TCP syslog reception
+#$ModLoad imtcp
+#$InputTCPServerRun 514
+
+
+#### GLOBAL DIRECTIVES ####
+
+# Where to place auxiliary files
+$WorkDirectory /var/lib/rsyslog
+
+# Use default timestamp format
+
+
+
+
+"Could you please proceed with the implementation of the SMTP relay server? Please reach out to the monitoring team if you need any help."
+
+
