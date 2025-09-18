@@ -490,4 +490,19 @@ ALTER TABLE history_uint REORGANIZE PARTITION last_part INTO (
     PARTITION last_part VALUES LESS THAN MAXVALUE
 );
 
+https://claude.ai/chat/adad1b64-769b-4107-a4f7-ba15d45c5df8
 
+DB Parition: 
+
+Partition Status:
+
+SELECT 
+    PARTITION_NAME,
+    PARTITION_DESCRIPTION,
+    TABLE_ROWS
+FROM INFORMATION_SCHEMA.PARTITIONS 
+WHERE TABLE_NAME = 'history_uint' 
+AND TABLE_SCHEMA = 'zabbix'
+ORDER BY PARTITION_DESCRIPTION;
+
+===========================================================
