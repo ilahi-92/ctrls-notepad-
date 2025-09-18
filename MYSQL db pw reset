@@ -1,0 +1,69 @@
+Reset MySQL password.sys
+
+stop mysqld
+
+start
+
+mysqld --skip-grant-tables
+
+if it gives error
+
+sudo sudo
+
+vi /etc/my.cnf
+
+[mysqld]
+skip-grant-tables
+
+
+systemctl restart mysqld
+
+mysql -u root
+
+
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'Zabbix@New123@45678';
+
+
+
+
+
+
+
+
+
+
+TEST :
+
+
+ 967  pidof zabbix_proxy
+  968  kill -9 2507504
+  969  systemctl restart zabbix_proxy
+  970  systemctl restart zabbix-proxy
+  971  systemctl restart zabbix-agent
+  972  systemctl status mysqld
+  973  systemctl restart mysqld
+  974  systemctl status mysql
+  975  systemctl status mysqld
+  976  mysql
+  977  systemctl status mysqld
+  978  mysql
+  979  ps aux | grep mysql
+  980  sudo pkill mysqld
+  981  ps aux | grep mysql
+  982  mysql
+  983  echo "[mysqld]
+  984  skip-log-bin" > /etc/my.cnf.d/disable-binlog.cnf
+  985  chown -R mysql:mysql /var/lib/mysql
+  986  systemctl start mysqld
+  987  systemctl status mysqld
+  988  mysql
+  989  systemctl restart zabbix-proxy
+  990  systemctl status zabbix-prxoy
+  991  systemctl status zabbix-proxy
+  992  cd /var/lib/mysql
+  993  ls -ltrh
+  994  cat binlog.index
+  995  vi /etc/zabbix/zabbix_proxy
+  996  vi /etc/zabbix/zabbix_proxy.conf
+  997  systemctl restart zabbix-proxy
+  998  exit
